@@ -2,10 +2,9 @@ package twilightforest.advancements.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.criterion.SingleComponentItemPredicate;
+import net.minecraft.advancements.predicates.SingleComponentItemPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 
 //TODO: Delete this
