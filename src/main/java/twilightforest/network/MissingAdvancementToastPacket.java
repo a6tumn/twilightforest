@@ -31,7 +31,7 @@ public record MissingAdvancementToastPacket(Component title, ItemStack icon) imp
 			ctx.enqueueWork(new Runnable() {
 				@Override
 				public void run() {
-					Minecraft.getInstance().getToastManager().addToast(new MissingAdvancementToast(packet.title(), packet.icon()));
+					Minecraft.getInstance().gui.toastManager().addToast(new MissingAdvancementToast(packet.title(), packet.icon()));
 				}
 			});
 		}
