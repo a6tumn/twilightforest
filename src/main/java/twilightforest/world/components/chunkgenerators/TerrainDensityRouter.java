@@ -8,7 +8,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import org.jetbrains.annotations.NotNull;
 import twilightforest.TFRegistries;
 import twilightforest.world.components.layer.BiomeDensitySource;
 
@@ -21,8 +20,8 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 		Codec.doubleRange(-64, 0).fieldOf("lower_density_bound").forGetter(TerrainDensityRouter::lowerDensityBound),
 		Codec.doubleRange(0, 64).fieldOf("upper_density_bound").forGetter(TerrainDensityRouter::upperDensityBound),
 		Codec.doubleRange(0, 32).orElse(8.0).fieldOf("depth_scalar").forGetter(TerrainDensityRouter::depthScalar),
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("base_factor").forGetter(TerrainDensityRouter::baseFactor),
-		DensityFunction.HOLDER_HELPER_CODEC.fieldOf("base_offset").forGetter(TerrainDensityRouter::baseOffset)
+		DensityFunction.CODEC.fieldOf("base_factor").forGetter(TerrainDensityRouter::baseFactor),
+		DensityFunction.CODEC.fieldOf("base_offset").forGetter(TerrainDensityRouter::baseOffset)
 	).apply(inst, TerrainDensityRouter::new));
 	public static final KeyDispatchDataCodec<TerrainDensityRouter> KEY_CODEC = KeyDispatchDataCodec.of(CODEC);
 
@@ -58,7 +57,6 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 
 	// Our default method for obtaining column samples of the biome source.
 	// This method is overridden by CachedTerrainDensityRouter, operating that subclass's cache.
-	@NotNull
 	public BiomeDensitySource.DensityData computeTerrain(FunctionContext context) {
 		return this.biomeDensitySourceHolder.value().sampleTerrain(context.blockX(), context.blockZ(), context);
 	}
@@ -130,7 +128,6 @@ public class TerrainDensityRouter implements DensityFunction.SimpleFunction {
 			this.biomeDensitySource = biomeDensitySource.value();
 		}
 
-		@NotNull
 		@Override
 		public BiomeDensitySource.DensityData computeTerrain(FunctionContext context) {
 			int xInChunk = SectionPos.sectionRelative(context.blockX());

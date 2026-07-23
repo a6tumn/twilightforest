@@ -182,7 +182,7 @@ public class SnowTreeFeature extends Feature<TreeConfiguration> {
 				if (!posSet.contains(blockpos$mutableblockpos)) {
 					BlockState blockstate = accessor.getBlockState(blockpos$mutableblockpos);
 					if (blockstate.hasProperty(BlockStateProperties.DISTANCE)) {
-						list.get(0).add(blockpos$mutableblockpos.immutable());
+						list.getFirst().add(blockpos$mutableblockpos.immutable());
 						setBlockKnownShape(accessor, blockpos$mutableblockpos, blockstate.setValue(BlockStateProperties.DISTANCE, 1));
 						if (box.isInside(blockpos$mutableblockpos)) {
 							discretevoxelshape.fill(blockpos$mutableblockpos.getX() - box.minX(), blockpos$mutableblockpos.getY() - box.minY(), blockpos$mutableblockpos.getZ() - box.minZ());
