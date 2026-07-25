@@ -36,6 +36,6 @@ public final class TargetedRotProcessor extends BlockRotProcessor {
 
 	@Override
 	public MapCodec<BlockRotProcessor> codec() {
-		return TFStructureProcessors.TARGETED_ROT.get();
+		return (MapCodec<BlockRotProcessor>) (MapCodec<?>) TFStructureProcessors.TARGETED_ROT.get();
 	}
 }
