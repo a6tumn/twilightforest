@@ -20,7 +20,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import twilightforest.init.TFDataMaps;
 import twilightforest.init.TFSounds;
 import twilightforest.init.TFStats;
@@ -95,12 +95,12 @@ public class CrumbleHornItem extends Item {
 	private boolean crumbleBlock(ServerLevel serverLevel, LivingEntity living, BlockPos pos) {
 		BlockState state = serverLevel.getBlockState(pos);
 		Block block = state.getBlock();
-		var crumbleMap = block.builtInRegistryHolder().getData(TFDataMaps.CRUMBLE_HORN);
+		var crumbleMap = block.defaultBlockState().typeHolder().getData(TFDataMaps.CRUMBLE_HORN);
 
 		if (state.isAir() || crumbleMap == null) return false;
 
 		if (living instanceof Player) {
-			if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(serverLevel, pos, state, (Player) living)).isCanceled())
+			if (NeoForge.EVENT_BUS.post(new BreakBlockEvent(serverLevel, pos, state, (Player) living)).isCanceled())
 				return false;
 		}
 
