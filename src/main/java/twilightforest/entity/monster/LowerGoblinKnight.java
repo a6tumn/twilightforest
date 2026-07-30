@@ -51,7 +51,7 @@ public class LowerGoblinKnight extends Monster {
 		this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.0D, false) {
 			@Override
 			public boolean canUse() {
-				if (mob.isVehicle() && this.mob.getPassengers().get(0) instanceof UpperGoblinKnight knight && knight.heavySpearTimer > 0) {
+				if (mob.isVehicle() && this.mob.getPassengers().getFirst() instanceof UpperGoblinKnight knight && knight.heavySpearTimer > 0) {
 					return false;
 				}
 				return super.canUse();
@@ -127,7 +127,7 @@ public class LowerGoblinKnight extends Monster {
 
 	@Override
 	public boolean doHurtTarget(ServerLevel server, Entity entity) {
-		if (this.isVehicle() && this.getPassengers().get(0) instanceof LivingEntity living) {
+		if (this.isVehicle() && this.getPassengers().getFirst() instanceof LivingEntity living) {
 			return living.doHurtTarget(server, entity);
 		} else {
 			return super.doHurtTarget(server, entity);
@@ -175,7 +175,7 @@ public class LowerGoblinKnight extends Monster {
 			// shield?
 			UpperGoblinKnight upper = null;
 
-			if (this.isVehicle() && this.getPassengers().get(0) instanceof UpperGoblinKnight goblin) {
+			if (this.isVehicle() && this.getPassengers().getFirst() instanceof UpperGoblinKnight goblin) {
 				upper = goblin;
 			}
 
