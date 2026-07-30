@@ -123,7 +123,7 @@ public record MagicPaintingVariant(int width, int height, List<Layer> layers, Co
 			}
 
 			public boolean matches(ItemStack itemStack) {
-				return this.itemTriggers.contains(itemStack.getItem().builtInRegistryHolder());
+				return this.itemTriggers.contains(itemStack.typeHolder());
 			}
 
 			//Just so we can access MobEffectCategory in json
