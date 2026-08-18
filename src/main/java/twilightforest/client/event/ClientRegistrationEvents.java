@@ -43,6 +43,7 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.map.RegisterMapDecorationRenderersEvent;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
@@ -70,6 +71,7 @@ import twilightforest.client.renderer.entity.layers.IceLayer;
 import twilightforest.client.renderer.entity.layers.ShieldLayer;
 import twilightforest.client.renderer.map.ConqueredMapIconRenderer;
 import twilightforest.client.renderer.map.MagicMapPlayerIconRenderer;
+import twilightforest.client.renderer.special.*;
 import twilightforest.client.renderer.tooltip.ItemDisplayTooltipComponent;
 import twilightforest.client.renderer.tooltip.PotionFlaskTooltipComponent;
 import twilightforest.client.renderer.tooltip.TravellersBeltTooltipComponent;
@@ -79,6 +81,8 @@ import twilightforest.item.PotionFlaskItem;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.TravellersArmorItem;
 import twilightforest.item.travellers_gear.TravellersGogglesItem;
+import twilightforest.network.GogglesZoomPacket;
+import twilightforest.network.GradualGlidePacket;
 import twilightforest.util.woods.TFWoodTypes;
 
 import java.util.Objects;
@@ -94,12 +98,14 @@ public class ClientRegistrationEvents {
 		bus.addListener(this::clientSetup);
 		bus.addListener(this::registerAdditionalModels);
 		bus.addListener(this::registerClientReloadListeners);
+		bus.addListener(this::registerClientPayloadHandlers);
 		bus.addListener(this::registerAtlases);
 		bus.addListener(this::registerEntityRenderers);
 		bus.addListener(this::registerLayerDefinitions);
 		bus.addListener(this::registerModelLoaders);
 		bus.addListener(this::registerBlockStateModels);
 		bus.addListener(this::registerScreens);
+		bus.addListener(this::registerSpecialModelRenders);
 		bus.addListener(this::registerClientExtensions);
 		bus.addListener(this::registerMapDecorators);
 		bus.addListener(this::registerParticleFactories);
@@ -162,19 +168,18 @@ public class ClientRegistrationEvents {
 		event.getBakingResult().blockStateModels().put(TFBlocks.REACTOR_DEBRIS.get().defaultBlockState(), new ReactorDebrisModel(netherrackModel));
 	}
 
-	private void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-		event.register(ShieldLayer.LOC);
-		event.register(ModelResourceLocation.standalone(TwilightForestMod.prefix("item/trophy")));
-		event.register(ModelResourceLocation.standalone(TwilightForestMod.prefix("item/trophy_minor")));
-		event.register(ModelResourceLocation.standalone(TwilightForestMod.prefix("item/trophy_quest")));
-		event.register(TrollsteinnModel.LIT_TROLLSTEINN);
-
-		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-			Identifier location = lid.identifier();
-			String name = location.getPath();
-			if (lid.customPath() != null) name = lid.customPath();
-			event.register(ModelResourceLocation.standalone(TwilightForestMod.prefix("block/lid/" + name)));
-		}
+	private void registerSpecialModelRenders(RegisterSpecialModelRendererEvent event) {
+		event.register(TwilightForestMod.prefix("candelabra"), CandelabraSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("cicada"), CicadaSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("firefly"), FireflySpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("keepsake_casket"), KeepsakeCasketSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("knightmetal_shield"), KnightmetalShieldSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("mason_jar"), MasonJarSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("moonworm"), MoonwormSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("mystic_crown"), MysticCrownSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("skull_candle"), SkullCandleSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("skull_chest"), SkullChestSpecialRenderer.Unbaked.MAP_CODEC);
+		event.register(TwilightForestMod.prefix("trophy"), TrophySpecialRenderer.Unbaked.MAP_CODEC);
 	}
 
 	private void cacheJarLids(ModelEvent.BakingCompleted event) {
@@ -205,6 +210,11 @@ public class ClientRegistrationEvents {
 	private void registerClientReloadListeners(AddClientReloadListenersEvent event) {
 		event.addListener(TwilightForestMod.prefix("texture_generator"), TextureGeneratorReloadListener.INSTANCE);
 		event.addListener(TwilightForestMod.prefix("armor_cache"), new TFArmorRenderer.ResourceReloadListener());
+	}
+
+	private void registerClientPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
+		event.register(GogglesZoomPacket.TYPE, GogglesZoomPacket::handle);
+		event.register(GradualGlidePacket.TYPE, GradualGlidePacket::handle);
 	}
 
 	private void registerScreens(RegisterMenuScreensEvent event) {
