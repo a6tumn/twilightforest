@@ -98,7 +98,6 @@ public class ClientRegistrationEvents {
 		bus.addListener(this::clientSetup);
 		bus.addListener(this::registerAdditionalModels);
 		bus.addListener(this::registerClientReloadListeners);
-		bus.addListener(this::registerClientPayloadHandlers);
 		bus.addListener(this::registerAtlases);
 		bus.addListener(this::registerEntityRenderers);
 		bus.addListener(this::registerLayerDefinitions);
@@ -210,11 +209,6 @@ public class ClientRegistrationEvents {
 	private void registerClientReloadListeners(AddClientReloadListenersEvent event) {
 		event.addListener(TwilightForestMod.prefix("texture_generator"), TextureGeneratorReloadListener.INSTANCE);
 		event.addListener(TwilightForestMod.prefix("armor_cache"), new TFArmorRenderer.ResourceReloadListener());
-	}
-
-	private void registerClientPayloadHandlers(RegisterClientPayloadHandlersEvent event) {
-		event.register(GogglesZoomPacket.TYPE, GogglesZoomPacket::handle);
-		event.register(GradualGlidePacket.TYPE, GradualGlidePacket::handle);
 	}
 
 	private void registerScreens(RegisterMenuScreensEvent event) {
