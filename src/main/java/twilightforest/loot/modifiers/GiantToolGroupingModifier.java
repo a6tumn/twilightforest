@@ -29,7 +29,7 @@ public class GiantToolGroupingModifier extends LootModifier {
 	}
 
 	@Override
-	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+	protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
 		if (context.getParameter(LootContextParams.THIS_ENTITY) instanceof Player player) {
 			if (!generatedLoot.isEmpty() && generatedLoot.getFirst().getItem() instanceof BlockItem block) {
 				if (CONVERSIONS.containsKey(block.getBlock())) { // Should be true but let's double-check

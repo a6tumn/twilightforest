@@ -26,7 +26,7 @@ public class FieryToolSmeltingModifier extends LootModifier {
 	}
 
 	@Override
-	protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+	protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
 		List<Pair<ItemStack, Float>> list = generatedLoot.stream().map(stack ->
 			context.getLevel().recipeAccess().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), context.getLevel())
 				.map(holder -> {
