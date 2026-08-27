@@ -216,7 +216,7 @@ public class DarkCanopyTreeFeature extends Feature<TreeConfiguration> {
 				if (!p_67205_.contains(blockpos$mutableblockpos)) {
 					BlockState blockstate = p_67203_.getBlockState(blockpos$mutableblockpos);
 					if (blockstate.hasProperty(BlockStateProperties.DISTANCE)) {
-						list.get(0).add(blockpos$mutableblockpos.immutable());
+						list.getFirst().add(blockpos$mutableblockpos.immutable());
 						setBlockKnownShape(p_67203_, blockpos$mutableblockpos, blockstate.setValue(BlockStateProperties.DISTANCE, Integer.valueOf(1)));
 						if (p_67204_.isInside(blockpos$mutableblockpos)) {
 							discretevoxelshape.fill(blockpos$mutableblockpos.getX() - p_67204_.minX(), blockpos$mutableblockpos.getY() - p_67204_.minY(), blockpos$mutableblockpos.getZ() - p_67204_.minZ());

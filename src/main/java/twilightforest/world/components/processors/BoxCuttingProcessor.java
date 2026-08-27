@@ -10,9 +10,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFStructureProcessors;
 import twilightforest.util.BoundingBoxUtils;
@@ -23,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // Despite the name, any facts about actual Box Cutters being involved are lies
-public final class BoxCuttingProcessor extends StructureProcessor {
+public final class BoxCuttingProcessor implements StructureProcessor {
 	public static final MapCodec<BoxCuttingProcessor> CODEC = BoundingBox.CODEC.listOf().xmap(BoxCuttingProcessor::new, p -> p.cutouts).fieldOf("boxes");
 
 	public final List<BoundingBox> cutouts;
@@ -32,9 +31,8 @@ public final class BoxCuttingProcessor extends StructureProcessor {
 		this.cutouts = cutouts;
 	}
 
-	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
+	public StructureTemplate.@Nullable StructureBlockInfo process(LevelReader level, BlockPos origin, BlockPos centerBottom, StructureTemplate.StructureBlockInfo originalBlockInfo, StructureTemplate.StructureBlockInfo modifiedBlockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
 		for (BoundingBox cutout : this.cutouts)
 			if (cutout.isInside(modifiedBlockInfo.pos()))
 				return null;
@@ -43,7 +41,7 @@ public final class BoxCuttingProcessor extends StructureProcessor {
 	}
 
 	@Override
-	protected StructureProcessorType<?> getType() {
+	public MapCodec<? extends StructureProcessor> codec() {
 		return TFStructureProcessors.BOX_CUTTING_PROCESSOR.get();
 	}
 

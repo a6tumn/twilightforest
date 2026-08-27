@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.HugeMushroomFeatureConfiguration;
+import org.jspecify.annotations.NonNull;
 import twilightforest.util.features.FeatureLogic;
 import twilightforest.world.components.feature.BigMushgloomFeature;
 
@@ -16,7 +17,7 @@ public class TrollBigMushgloomFeature extends BigMushgloomFeature {
 	}
 
 	@Override
-	protected void makeCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	protected void makeCap(@NonNull WorldGenLevel levelAccessor, @NonNull RandomSource random, @NonNull BlockPos pos, int height, BlockPos.@NonNull MutableBlockPos mutableBlockPos, @NonNull HugeMushroomFeatureConfiguration featureConfiguration) {
 		int foliageRadius = featureConfiguration.foliageRadius();
 		int capHeight = random.nextBoolean() ? 1 : 2;
 

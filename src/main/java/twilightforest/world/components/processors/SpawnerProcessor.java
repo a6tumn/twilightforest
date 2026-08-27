@@ -19,9 +19,8 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFStructureProcessors;
 
@@ -29,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalIsPresent")
-public class SpawnerProcessor extends StructureProcessor {
+public class SpawnerProcessor implements StructureProcessor {
 	public static final MapCodec<SpawnerProcessor> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		Codec.SHORT.optionalFieldOf("range").forGetter(SpawnerProcessor::serializeRange),
 		Codec.FLOAT.optionalFieldOf("start_delay_factor").forGetter(SpawnerProcessor::getDelayFactor),
@@ -67,9 +66,8 @@ public class SpawnerProcessor extends StructureProcessor {
 		this.entityWidthMax = entityWidthMax.isEmpty() ? Optional.empty() : entityWidthMax.get() <= 0 ? Optional.empty() : entityWidthMax;
 	}
 
-	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings, @Nullable StructureTemplate template) {
+	public StructureTemplate.@Nullable StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings, @Nullable StructureTemplate template) {
 		CompoundTag nbtInfo = modifiedInfo.nbt();
 
 		if (nbtInfo != null && (modifiedInfo.state().is(Blocks.SPAWNER) || modifiedInfo.state().is(TFBlocks.SINISTER_SPAWNER))) {
@@ -119,17 +117,17 @@ public class SpawnerProcessor extends StructureProcessor {
 		return modifiedInfo;
 	}
 
+	@Override
+	public MapCodec<? extends StructureProcessor> codec() {
+		return TFStructureProcessors.SPAWNER_PROCESSOR.get();
+	}
+
 	public float rescaleToFitWidth(float entityWidth) {
 		if (this.entityWidthMax.isEmpty() || entityWidth == 0)
 			return 1; // No rescale, use default scale if NaN will be encountered
 
 		float maxWidth = this.entityWidthMax.get();
 		return entityWidth < maxWidth ? 1 : maxWidth / entityWidth;
-	}
-
-	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.SPAWNER_PROCESSOR.value();
 	}
 
 	private Optional<Short> serializeRange() {

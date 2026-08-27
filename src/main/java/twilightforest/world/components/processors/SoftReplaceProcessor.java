@@ -7,22 +7,20 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFStructureProcessors;
 import twilightforest.tags.TFBlockTags;
 
-public final class SoftReplaceProcessor extends StructureProcessor {
+public final class SoftReplaceProcessor implements StructureProcessor {
 	public static final SoftReplaceProcessor INSTANCE = new SoftReplaceProcessor();
 	public static final MapCodec<SoftReplaceProcessor> CODEC = MapCodec.unit(INSTANCE);
 
 	private SoftReplaceProcessor() {
 	}
 
-	@Nullable
 	@Override
-	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings, @Nullable StructureTemplate template) {
+	public StructureTemplate.@Nullable StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings, @Nullable StructureTemplate template) {
 		BlockState blockAt = level.getBlockState(modifiedInfo.pos());
 
 		boolean isReplaceableAt = blockAt.canBeReplaced() || blockAt.is(TFBlockTags.WORLDGEN_REPLACEABLES);
@@ -39,14 +37,14 @@ public final class SoftReplaceProcessor extends StructureProcessor {
 		return null;
 	}
 
+	@Override
+	public MapCodec<? extends StructureProcessor> codec() {
+		return TFStructureProcessors.SOFT_REPLACE.get();
+	}
+
 	private boolean isFullBlock(BlockState state) {
 		// the BlockState#isSolid() is not reliable in checking for a full block
 		Block block = state.getBlock();
 		return !(block instanceof FenceBlock || block instanceof WallBlock || block instanceof SlabBlock || block instanceof StairBlock);
-	}
-
-	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.SOFT_REPLACE.value();
 	}
 }

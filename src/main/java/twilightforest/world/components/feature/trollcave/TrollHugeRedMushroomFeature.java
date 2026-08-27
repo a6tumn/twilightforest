@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.HugeRedMushroomFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.HugeMushroomFeatureConfiguration;
+import org.jspecify.annotations.NonNull;
 import twilightforest.util.features.FeatureLogic;
 
 
@@ -19,7 +20,7 @@ public class TrollHugeRedMushroomFeature extends HugeRedMushroomFeature {
 	}
 
 	@Override
-	protected void makeCap(WorldGenLevel levelAccessor, RandomSource random, BlockPos pos, int height, BlockPos.MutableBlockPos mutableBlockPos, HugeMushroomFeatureConfiguration featureConfiguration) {
+	protected void makeCap(@NonNull WorldGenLevel levelAccessor, @NonNull RandomSource random, @NonNull BlockPos pos, int height, BlockPos.@NonNull MutableBlockPos mutableBlockPos, @NonNull HugeMushroomFeatureConfiguration featureConfiguration) {
 		for (int y = height - 3; y <= height; y++) {
 			int foliageRadius = y < height ? featureConfiguration.foliageRadius() : featureConfiguration.foliageRadius() - 1;
 			int innerRadius = featureConfiguration.foliageRadius() - 2;
