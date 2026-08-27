@@ -11,6 +11,7 @@ import net.minecraft.util.TriState;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.*;
 import net.minecraft.world.level.CardinalLighting;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -44,6 +45,8 @@ public class TFDimensionData {
 
 	public static void bootstrapType(BootstrapContext<DimensionType> context) {
 		HolderGetter<Timeline> timelines = context.lookup(Registries.TIMELINE);
+		HolderGetter<Block> blocks = context.lookup(Registries.BLOCK);
+
 		context.register(TWILIGHT_DIM_TYPE, new DimensionType(
 			true, //fixed time
 			true, //skylight
@@ -53,7 +56,7 @@ public class TFDimensionData {
 			-32, // Minimum Y Level
 			32 + 256, // Height + Min Y = Max Y
 			32 + 256, // Logical Height
-			BlockTags.INFINIBURN_OVERWORLD, //infiburn tag
+			blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), //infiburn tag
 			0.01F, //ambient light
 			new DimensionType.MonsterSettings(UniformInt.of(0, 7), 7), //monster settings
 			DimensionType.Skybox.OVERWORLD, //skybox

@@ -511,7 +511,57 @@ public class TFCreativeTabs {
 			output.accept(TFItems.TRANSFORMATION_CHEST_BOAT);
 			output.accept(TFItems.MINING_CHEST_BOAT);
 			output.accept(TFItems.SORTING_CHEST_BOAT);
-			createSpawnEggsAlphabetical(output);
+			output.accept(TFItems.ALPHA_YETI_SPAWN_EGG);
+			output.accept(TFItems.ARMORED_GIANT_SPAWN_EGG);
+			output.accept(TFItems.BIGHORN_SHEEP_SPAWN_EGG);
+			output.accept(TFItems.BLOCKCHAIN_GOBLIN_SPAWN_EGG);
+			output.accept(TFItems.BOAR_SPAWN_EGG);
+			output.accept(TFItems.CARMINITE_BROODLING_SPAWN_EGG);
+			output.accept(TFItems.CARMINITE_GHASTGUARD_SPAWN_EGG);
+			output.accept(TFItems.CARMINITE_GHASTLING_SPAWN_EGG);
+			output.accept(TFItems.CARMINITE_GOLEM_SPAWN_EGG);
+			output.accept(TFItems.DEATH_TOME_SPAWN_EGG);
+			output.accept(TFItems.DEER_SPAWN_EGG);
+			output.accept(TFItems.DWARF_RABBIT_SPAWN_EGG);
+			output.accept(TFItems.FIRE_BEETLE_SPAWN_EGG);
+			output.accept(TFItems.GIANT_MINER_SPAWN_EGG);
+			output.accept(TFItems.HEDGE_SPIDER_SPAWN_EGG);
+			output.accept(TFItems.HELMET_CRAB_SPAWN_EGG);
+			output.accept(TFItems.HOSTILE_WOLF_SPAWN_EGG);
+			output.accept(TFItems.HYDRA_SPAWN_EGG);
+			output.accept(TFItems.ICE_CRYSTAL_SPAWN_EGG);
+			output.accept(TFItems.KING_SPIDER_SPAWN_EGG);
+			output.accept(TFItems.KNIGHT_PHANTOM_SPAWN_EGG);
+			output.accept(TFItems.KOBOLD_SPAWN_EGG);
+			output.accept(TFItems.LICH_SPAWN_EGG);
+			output.accept(TFItems.LOWER_GOBLIN_KNIGHT_SPAWN_EGG);
+			output.accept(TFItems.MAZE_SLIME_SPAWN_EGG);
+			output.accept(TFItems.MINOSHROOM_SPAWN_EGG);
+			output.accept(TFItems.MINOTAUR_SPAWN_EGG);
+			output.accept(TFItems.MIST_WOLF_SPAWN_EGG);
+			output.accept(TFItems.MOSQUITO_SWARM_SPAWN_EGG);
+			output.accept(TFItems.NAGA_SPAWN_EGG);
+			output.accept(TFItems.PENGUIN_SPAWN_EGG);
+			output.accept(TFItems.PINCH_BEETLE_SPAWN_EGG);
+			output.accept(TFItems.QUEST_RAM_SPAWN_EGG);
+			output.accept(TFItems.RAVEN_SPAWN_EGG);
+			output.accept(TFItems.REDCAP_SPAWN_EGG);
+			output.accept(TFItems.REDCAP_SAPPER_SPAWN_EGG);
+			output.accept(TFItems.SKELETON_DRUID_SPAWN_EGG);
+			output.accept(TFItems.SLIME_BEETLE_SPAWN_EGG);
+			output.accept(TFItems.SNOW_GUARDIAN_SPAWN_EGG);
+			output.accept(TFItems.SNOW_QUEEN_SPAWN_EGG);
+			output.accept(TFItems.SQUIRREL_SPAWN_EGG);
+			output.accept(TFItems.STABLE_ICE_CORE_SPAWN_EGG);
+			output.accept(TFItems.SWARM_SPIDER_SPAWN_EGG);
+			output.accept(TFItems.TINY_BIRD_SPAWN_EGG);
+			output.accept(TFItems.TOWERWOOD_BORER_SPAWN_EGG);
+			output.accept(TFItems.TROLL_SPAWN_EGG);
+			output.accept(TFItems.UNSTABLE_ICE_CORE_SPAWN_EGG);
+			output.accept(TFItems.UR_GHAST_SPAWN_EGG);
+			output.accept(TFItems.WINTER_WOLF_SPAWN_EGG);
+			output.accept(TFItems.WRAITH_SPAWN_EGG);
+			output.accept(TFItems.YETI_SPAWN_EGG);
 		}).build());
 
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EQUIPMENT = TABS.register("equipment", () -> CreativeModeTab.builder()
@@ -648,11 +698,6 @@ public class TFCreativeTabs {
 			}
 		}
 		output.accept(stack);
-	}
-
-	private static void createSpawnEggsAlphabetical(CreativeModeTab.Output output) {
-		Collection<? extends Item> eggs = TFEntities.SPAWN_EGGS.getEntries().stream().map(DeferredHolder::value).toList();
-		eggs.forEach(output::accept);
 	}
 
 	private static void createDefaultSkullCandle(CreativeModeTab.Output output, ItemLike item) {
