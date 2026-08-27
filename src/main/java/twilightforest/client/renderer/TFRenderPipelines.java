@@ -1,5 +1,6 @@
 package twilightforest.client.renderer;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
@@ -8,7 +9,6 @@ import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderPipelines;
 import twilightforest.TwilightForestMod;
 
@@ -23,7 +23,7 @@ public class TFRenderPipelines {
 		.withSampler("Sampler0")
 		.withVertexShader(TwilightForestMod.prefix("core/red_thread/red_thread"))
 		.withFragmentShader(TwilightForestMod.prefix("core/red_thread/red_thread"))
-		.withVertexFormat(DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS)
+		.withVertexFormat(DefaultVertexFormat.BLOCK, PrimitiveTopology.QUADS)
 		.withCull(true)
 		.withDepthStencilState(Optional.of(new DepthStencilState(CompareOp.ALWAYS_PASS, false)))
 		.build();
@@ -39,7 +39,7 @@ public class TFRenderPipelines {
 		.withSampler("Sampler0")
 		.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
 		.withCull(false)
-		.withVertexFormat(DefaultVertexFormat.ENTITY, VertexFormat.Mode.QUADS)
+		.withVertexFormat(DefaultVertexFormat.ENTITY, PrimitiveTopology.QUADS)
 		.withDepthStencilState(DepthStencilState.DEFAULT)
 		.build();
 

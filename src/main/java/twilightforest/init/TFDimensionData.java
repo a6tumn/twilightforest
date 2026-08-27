@@ -112,7 +112,7 @@ public class TFDimensionData {
 				DensityFunctions.zero(),
 				DensityFunctions.zero()
 			),
-			TFSurfaceRules.tfSurface(),
+			TFSurfaceRules.tfSurface(context.lookup(Registries.BIOME)),
 			List.of(),
 			TFDimensionData.SEALEVEL,
 			false,

@@ -16,7 +16,7 @@ public class MoonDialDisplay implements ItemDisplay {
 
 	@Override
 	public void render(ItemStack item, GuiGraphicsExtractor graphics, Minecraft minecraft, Gui gui, Player player, int widestWidgetWidth) {
-		BlockPos pos = minecraft.gameRenderer.getMainCamera().blockPosition();
+		BlockPos pos = minecraft.gameRenderer.mainCamera().blockPosition();
 		int k = minecraft.level.environmentAttributes().getValue(EnvironmentAttributes.MOON_PHASE, pos).index();
 		FormattedCharSequence formattedcharsequence = this.getText(minecraft, pos).getVisualOrderText();
 		int xRow = k % 4;

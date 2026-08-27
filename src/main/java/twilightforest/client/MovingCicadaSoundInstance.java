@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.fml.ModList;
-import twilightforest.compat.curios.CuriosCompat;
+//import twilightforest.compat.curios.CuriosCompat;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFSounds;
@@ -38,7 +38,7 @@ public class MovingCicadaSoundInstance extends AbstractTickableSoundInstance {
 
 	private boolean isWearingCicadaCurio() {
 		if (ModList.get().isLoaded("curios")) {
-			return CuriosCompat.isCurioEquipped(this.wearer, stack -> stack.is(TFBlocks.CICADA.asItem()));
+			//return CuriosCompat.isCurioEquipped(this.wearer, stack -> stack.is(TFBlocks.CICADA.asItem()));
 		}
 		return false;
 	}

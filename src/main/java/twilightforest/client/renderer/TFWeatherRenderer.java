@@ -6,7 +6,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +17,7 @@ import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -181,7 +181,7 @@ public class TFWeatherRenderer {
 									float countFactor = ((float) (ticks + dx * dx * 3121 + dx * 45238971 + dz * dz * 418711 + dz * 13761 & 31) + partialTicks) / 32.0F * (3.0F + random.nextFloat());
 									float uFactor = random.nextFloat();
 									float vFactor = random.nextFloat();
-									int worldBrightness = LevelRenderer.getLightCoords(level, pos);
+									int worldBrightness = LightCoordsUtil.getLightCoords(level, pos);
 									renderEffect(currentType.getTextureLocation(), rainX, rainZ, minY, maxY, camera, dx, dz, countFactor, uFactor, vFactor, new float[]{1.0F, 1.0F, 1.0F, alpha}, worldBrightness, buffer);
 								}
 							}
@@ -296,7 +296,7 @@ public class TFWeatherRenderer {
 	}
 
 	private static void renderEffect(Identifier type, double rainX, double rainZ, int minY, int maxY, Vec3 camera, int dx, int dz, float countFactor, float uFactor, float vFactor, float[] color, int light, MultiBufferSource bufferSource) {
-		VertexConsumer consumer = bufferSource.getBuffer(RenderTypeUtil.weather(type, Minecraft.useShaderTransparency()));
+		VertexConsumer consumer = bufferSource.getBuffer(RenderTypeUtil.weather(type, Minecraft.getInstance().useShaderTransparency()));
 		consumer
 			.addVertex((float) (dx - camera.x() - rainX + 0.5F), (float) (minY - camera.y()), (float) (dz - camera.z() - rainZ + 0.5F))
 			.setUv(0.0F + uFactor, minY * 0.25F + countFactor + vFactor)
@@ -417,8 +417,8 @@ public class TFWeatherRenderer {
 				}
 			}
 
-			if (blockpos1 != null && randomsource.nextInt(4) < Minecraft.getInstance().levelRenderer.weatherEffectRenderer.rainSoundTime++) {
-				Minecraft.getInstance().levelRenderer.weatherEffectRenderer.rainSoundTime = 0;
+			if (blockpos1 != null && randomsource.nextInt(4) < Minecraft.getInstance().level.rainSoundTime++) {
+				Minecraft.getInstance().level.rainSoundTime = 0;
 				if (blockpos1.getY() > blockpos.getY() + 1 && level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, blockpos).getY() > Mth.floor((float) blockpos.getY())) {
 					level.playLocalSound(blockpos1, SoundEvents.WEATHER_RAIN_ABOVE, SoundSource.WEATHER, 0.1F, 0.5F, false);
 				} else {

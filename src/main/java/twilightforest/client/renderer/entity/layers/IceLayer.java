@@ -71,7 +71,7 @@ public class IceLayer<S extends LivingEntityRenderState, M extends EntityModel<S
 				movingState.lightEngine = level.getLightEngine();
 			}
 
-			submitNodeCollector.submitMovingBlock(stack, movingState);
+			submitNodeCollector.submitMovingBlock(stack, movingState, 0);
 
 			stack.popPose();
 		}
