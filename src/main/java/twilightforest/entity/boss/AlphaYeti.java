@@ -112,7 +112,7 @@ public class AlphaYeti extends BaseTFBoss implements RangedAttackMob, IHostileMo
 		super.aiStep();
 
 		if (this.isVehicle()) {
-			this.getLookControl().setLookAt(this.getPassengers().get(0), 100.0F, 100.0F);
+			this.getLookControl().setLookAt(this.getPassengers().getFirst(), 100.0F, 100.0F);
 		}
 
 		if (this.level().isClientSide()) {

@@ -69,7 +69,7 @@ public class KingSpider extends Spider {
 				druid.finalizeSpawn(accessor, difficulty, EntitySpawnReason.JOCKEY, null);
 				Entity lastRider = this;
 				while (!lastRider.getPassengers().isEmpty())
-					lastRider = lastRider.getPassengers().get(0);
+					lastRider = lastRider.getPassengers().getFirst();
 				druid.startRiding(lastRider);
 			}
 		}

@@ -2,11 +2,8 @@ package twilightforest.entity.passive;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -37,8 +34,6 @@ import twilightforest.init.TFEntities;
 import twilightforest.init.TFSounds;
 import twilightforest.init.custom.DwarfRabbitVariants;
 import twilightforest.tags.TFItemTags;
-
-import java.util.Optional;
 
 public class DwarfRabbit extends Animal {
 

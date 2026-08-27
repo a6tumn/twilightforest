@@ -93,7 +93,7 @@ public class Yeti extends Monster implements IHostileMount {
 
 		// look at things in our jaws
 		if (!this.getPassengers().isEmpty()) {
-			this.getLookControl().setLookAt(this.getPassengers().get(0), 100F, 100F);
+			this.getLookControl().setLookAt(this.getPassengers().getFirst(), 100F, 100F);
 		}
 	}
 
