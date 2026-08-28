@@ -2,16 +2,16 @@ package twilightforest.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -34,14 +34,12 @@ import java.util.List;
 import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-//	protected final BlockRenderDispatcher blockRenderer;
 	protected static final float WOBBLE_AMPLITUDE = 0.125F;
 
 	private final ModelManager modelManager;
 
 	public JarRenderer(BlockEntityRendererProvider.Context context) {
 		this.modelManager = context.blockModelResolver().modelManager;
-//		this.blockRenderer = context.getBlockRenderDispatcher();
 	}
 
 	@Override
@@ -64,10 +62,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			? ((float) (level.getGameTime() - blockEntity.wobbleStartedAtTick)
 			+ level.getGameTime())
 			: 0L;
-	}
-
-	private static StandaloneModelKey<BlockStateModelPart> modelKey(Identifier model) {
-		return new StandaloneModelKey<>(model::toDebugFileName);
 	}
 
 	@Override
@@ -112,11 +106,30 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 					0 );
 			}
 		}
+
+		if (blockEntity.itemRenderState != null) {
+			poseStack.pushPose();
+
+			poseStack.translate(0.5D, 0.4375D, 0.5D);
+			poseStack.mulPose(
+				Axis.YN.rotationDegrees(
+					RotationSegment.convertToDegrees(blockEntity.itemRotation)
+				)
+			);
+			poseStack.scale(0.5F, 0.5F, 0.5F);
+
+			blockEntity.itemRenderState.submit(
+				poseStack,
+				buffer,
+				blockEntity.lightCoords,
+				OverlayTexture.NO_OVERLAY,
+				0
+			);
+
+			poseStack.popPose();
+		}
+
 		poseStack.popPose();
-	}
-
-	public void renderContents(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-
 	}
 
 	@Configurable
@@ -125,32 +138,45 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		@Autowired(dist = Dist.CLIENT)
 		private TFItemDisplayContextEnumExtension itemDisplayContextEnumExtension;
 
-//		protected final ItemRenderer itemRenderer;
-//		protected final EntityRenderDispatcher entityRender;
-//		protected final Font font;
+		private final ItemModelResolver itemModelResolver;
 
 		public MasonJarRenderer(BlockEntityRendererProvider.Context context) {
 			super(context);
-//			this.entityRender = context.getEntityRenderer();
-//			this.itemRenderer = context.getItemRenderer();
-//			this.font = context.getFont();
+			this.itemModelResolver = context.itemModelResolver();
 		}
 
 		@Override
-		public void renderContents(MasonJarBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+		public void extractRenderState(
+			MasonJarBlockEntity blockEntity,
+			JarRenderState state,
+			float partialTicks,
+			Vec3 cameraPosition,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+		) {
+			super.extractRenderState(
+				blockEntity,
+				state,
+				partialTicks,
+				cameraPosition,
+				breakProgress
+			);
+
+			state.itemRenderState = null;
+
 			ItemStack stack = blockEntity.getItemHandler().getItem();
-
 			if (!stack.isEmpty()) {
-				poseStack.pushPose();
-				poseStack.translate(0.5D, 0.4375D, 0.5D);
+				state.itemRenderState = new ItemStackRenderState();
 
-				poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(blockEntity.getItemRotation())));
+				this.itemModelResolver.updateForTopItem(
+					state.itemRenderState,
+					stack,
+					itemDisplayContextEnumExtension.JARRED,
+					null,
+					null,
+					0
+				);
 
-				poseStack.scale(0.5F, 0.5F, 0.5F);
-//				this.itemRenderer.renderStatic(stack, itemDisplayContextEnumExtension.JARRED, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, null, 0);
-
-
-				poseStack.popPose();
+				state.itemRotation = blockEntity.getItemRotation();
 			}
 		}
 	}
