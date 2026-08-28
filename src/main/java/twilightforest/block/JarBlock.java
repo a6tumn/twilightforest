@@ -129,7 +129,7 @@ public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock 
 				return InteractionResult.SUCCESS;
 			}
 		}
-		return InteractionResult.PASS;
+		return InteractionResult.TRY_WITH_EMPTY_HAND;
 	}
 
 	@Override
