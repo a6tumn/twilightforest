@@ -3,7 +3,10 @@ package twilightforest.client.renderer.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -11,7 +14,6 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -36,10 +38,10 @@ import java.util.Map;
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
 	protected static final float WOBBLE_AMPLITUDE = 0.125F;
 
-	private final ModelManager modelManager;
+	private final BlockModelResolver blockModelResolver;
 
 	public JarRenderer(BlockEntityRendererProvider.Context context) {
-		this.modelManager = context.blockModelResolver().modelManager;
+		this.blockModelResolver = context.blockModelResolver();
 	}
 
 	@Override
@@ -51,6 +53,13 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
+		state.jarModel = new BlockModelRenderState();
+		this.blockModelResolver.update(
+			state.jarModel,
+			blockEntity.getBlockState(),
+			BlockDisplayContext.create()
+		);
+
 		state.lidKey = null;
 		var level = blockEntity.getLevel();
 		if (level != null) {
@@ -59,9 +68,8 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
 		state.gameTime = level != null
-			? ((float) (level.getGameTime() - blockEntity.wobbleStartedAtTick)
-			+ level.getGameTime())
-			: 0L;
+			? (float) (level.getGameTime() - blockEntity.wobbleStartedAtTick) + partialTicks
+			: 0.0F;
 	}
 
 	@Override
@@ -95,8 +103,16 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			}
 		}
 
+		blockEntity.jarModel.submit(
+			poseStack,
+			buffer,
+			blockEntity.lightCoords,
+			OverlayTexture.NO_OVERLAY,
+			0
+		);
+
 		if (blockEntity.lidKey != null) {
-			BlockStateModelPart lid = modelManager.getStandaloneModel(blockEntity.lidKey);
+			BlockStateModelPart lid = blockModelResolver.modelManager.getStandaloneModel(blockEntity.lidKey);
 			if (lid != null) {
 				buffer.submitMultiLayerBlockModel(
 					poseStack,
