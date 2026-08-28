@@ -7,9 +7,16 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 
-public record JarLid(ResourceKey<Item> item, Identifier model) {
+public record JarLid(
+	ResourceKey<Item> item,
+	Identifier model
+) {
 	public static final Codec<JarLid> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		ResourceKey.codec(Registries.ITEM).fieldOf("item").forGetter(JarLid::item),
-		Identifier.CODEC.fieldOf("model").forGetter(JarLid::model)
+		ResourceKey.codec(Registries.ITEM)
+			.fieldOf("item")
+			.forGetter(JarLid::item),
+		Identifier.CODEC
+			.fieldOf("model")
+			.forGetter(JarLid::model)
 	).apply(instance, JarLid::new));
 }

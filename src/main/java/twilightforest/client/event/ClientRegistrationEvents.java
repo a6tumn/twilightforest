@@ -52,7 +52,6 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
-import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.*;
 import twilightforest.client.model.TFModelLayers;
@@ -93,8 +92,6 @@ import twilightforest.network.GogglesZoomPacket;
 import twilightforest.network.GradualGlidePacket;
 import twilightforest.util.woods.TFWoodTypes;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Component(dist = Dist.CLIENT)
@@ -196,26 +193,11 @@ public class ClientRegistrationEvents {
 		Identifier trophy_minor = TwilightForestMod.prefix("item/trophy_minor");
 		Identifier trophy_quest = TwilightForestMod.prefix("item/trophy_quest");
 
-		event.register(
-			new StandaloneModelKey<>(ShieldLayer.LOC::toDebugFileName),
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(ShieldLayer.LOC)
-		);
-		event.register(
-			new StandaloneModelKey<>(trophy::toDebugFileName),
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy)
-		);
-		event.register(
-			new StandaloneModelKey<>(trophy_minor::toDebugFileName),
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_minor)
-		);
-		event.register(
-			new StandaloneModelKey<>(trophy_quest::toDebugFileName),
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_quest)
-		);
-		event.register(
-			new StandaloneModelKey<>(TrollsteinnModel.LIT_TROLLSTEINN::toDebugFileName),
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(TrollsteinnModel.LIT_TROLLSTEINN)
-		);
+		event.register(new StandaloneModelKey<>(ShieldLayer.LOC::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(ShieldLayer.LOC));
+		event.register(new StandaloneModelKey<>(trophy::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy));
+		event.register(new StandaloneModelKey<>(trophy_minor::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_minor));
+		event.register(new StandaloneModelKey<>(trophy_quest::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_quest));
+		event.register(new StandaloneModelKey<>(TrollsteinnModel.LIT_TROLLSTEINN::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(TrollsteinnModel.LIT_TROLLSTEINN));
 
 		registerJarLidStandalone(event, Items.ACACIA_LOG);
 		registerJarLidStandalone(event, Items.BIRCH_LOG);
@@ -240,7 +222,6 @@ public class ClientRegistrationEvents {
 		registerJarLidStandalone(event, Items.PUMPKIN);
 		registerJarLidStandalone(event, Items.BAMBOO_BLOCK);
 		registerJarLidStandalone(event, Items.STRIPPED_BAMBOO_BLOCK);
-
 		registerJarLidStandalone(event, TFBlocks.MANGROVE_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.CANOPY_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.DARK_LOG.asItem());
@@ -249,6 +230,7 @@ public class ClientRegistrationEvents {
 		registerJarLidStandalone(event, TFBlocks.TIME_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.TRANSFORMATION_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.TWILIGHT_OAK_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.CINDER_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_CANOPY_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_DARK_LOG.asItem());
@@ -257,25 +239,14 @@ public class ClientRegistrationEvents {
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_TIME_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_TRANSFORMATION_LOG.asItem());
 		registerJarLidStandalone(event, TFBlocks.STRIPPED_TWILIGHT_OAK_LOG.asItem());
-		registerJarLidStandalone(event, TFBlocks.CINDER_LOG.asItem());
 	}
 
-	private void registerJarLidStandalone(
-		ModelEvent.RegisterStandalone event,
-		Item item
-	) {
+	private void registerJarLidStandalone(ModelEvent.RegisterStandalone event, Item item) {
 		ResourceKey<Item> itemKey = item.builtInRegistryHolder().key();
-		Identifier model = JarLids.model(item);
-
-		StandaloneModelKey<BlockStateModelPart> key =
-			new StandaloneModelKey<>(model::toDebugFileName);
-
-		event.register(
-			key,
-			SimpleUnbakedStandaloneModel.simpleModelWrapper(model)
-		);
-
-		JarRenderer.JAR_LID_KEYS.put(itemKey, key);
+		Identifier model = JarLids.getModelLocation(itemKey);
+		StandaloneModelKey<BlockStateModelPart> key = new StandaloneModelKey<>(model::toDebugFileName);
+		event.register(key, SimpleUnbakedStandaloneModel.simpleModelWrapper(model));
+		ClientJarLidRegistry.register(itemKey, key);
 	}
 
 	private void clientSetup(FMLClientSetupEvent evt) {

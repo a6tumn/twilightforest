@@ -12,9 +12,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
@@ -24,19 +22,15 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jspecify.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
-import twilightforest.TFRegistries;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
+import twilightforest.client.ClientJarLidRegistry;
 import twilightforest.client.state.block.JarRenderState;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-	public static final Map<ResourceKey<Item>, StandaloneModelKey<BlockStateModelPart>> JAR_LID_KEYS = new HashMap<>();
-
 //	protected final BlockRenderDispatcher blockRenderer;
 	protected static final float WOBBLE_AMPLITUDE = 0.125F;
 
@@ -53,25 +47,13 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	}
 
 	@Override
-	public void extractRenderState(
-		T blockEntity,
-		JarRenderState state,
-		float partialTicks,
-		Vec3 cameraPosition,
-		ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
-	) {
-		BlockEntityRenderer.super.extractRenderState(
-			blockEntity,
-			state,
-			partialTicks,
-			cameraPosition,
-			breakProgress
-		);
+	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
 		state.lidKey = null;
 		var level = blockEntity.getLevel();
-		if (level != null && blockEntity.lid != null) {
-			state.lidKey = JAR_LID_KEYS.get( blockEntity.lid.builtInRegistryHolder().key() );
+		if (level != null) {
+			state.lidKey = ClientJarLidRegistry.get(blockEntity.lid.builtInRegistryHolder().key());
 		}
 
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
@@ -91,19 +73,12 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	}
 
 	@Override
-	public void submit(
-		JarRenderState blockEntity,
-		PoseStack poseStack,
-		SubmitNodeCollector buffer,
-		CameraRenderState camera
-	) {
+	public void submit(JarRenderState blockEntity, PoseStack poseStack, SubmitNodeCollector buffer, CameraRenderState camera) {
 		poseStack.pushPose();
 		poseStack.translate(0.5, 0.0, 0.5);
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.translate(-0.5, 0.0, -0.5);
-
 		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
-
 		if (wobbleStyle != null) {
 			float f = blockEntity.gameTime / (float) wobbleStyle.duration;
 			if (f >= 0.0F && f <= 1.0F) {
@@ -121,7 +96,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 				}
 			}
 		}
-
 		if (blockEntity.lidKey != null) {
 			BlockStateModelPart lid = modelManager.getStandaloneModel(blockEntity.lidKey);
 			if (lid != null) {
@@ -135,7 +109,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 					0 );
 			}
 		}
-
 		poseStack.popPose();
 	}
 
