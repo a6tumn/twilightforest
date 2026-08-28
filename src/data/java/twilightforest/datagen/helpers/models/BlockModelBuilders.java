@@ -485,25 +485,102 @@ public abstract class BlockModelBuilders extends WoodBlockBuilders {
 		this.itemModelOutput.accept(TFItems.FIREFLY_JAR.get(), ItemModelUtils.composite(ItemModelUtils.plainModel(jar), ItemModelUtils.specialModel(jar, new MasonJarSpecialRenderer.Unbaked(TFBlocks.TWILIGHT_OAK_LOG.asItem()))));
 		this.itemModelOutput.accept(TFItems.CICADA_JAR.get(), ItemModelUtils.composite(ItemModelUtils.plainModel(jar), ItemModelUtils.specialModel(jar, new MasonJarSpecialRenderer.Unbaked(TFBlocks.CANOPY_LOG.asItem()))));
 
-		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-			Identifier item = lid.identifier();
-			String name = item.getPath();
+		generateJarLidModels();
+	}
 
-			if (lid.lid() == Items.PUMPKIN) {
-				TextureMapping lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
-					.put(TextureSlot.SIDE, new Material(Identifier.withDefaultNamespace("block/pumpkin_side")))
-					.put(TextureSlot.END, new Material(Identifier.withDefaultNamespace("block/pumpkin_top")));
+	private void generateJarLidModels() {
+		generateJarLidModel(Items.ACACIA_LOG);
+		generateJarLidModel(Items.BIRCH_LOG);
+		generateJarLidModel(Items.CHERRY_LOG);
+		generateJarLidModel(Items.DARK_OAK_LOG);
+		generateJarLidModel(Items.JUNGLE_LOG);
+		generateJarLidModel(Items.MANGROVE_LOG);
+		generateJarLidModel(Items.OAK_LOG);
+		generateJarLidModel(Items.SPRUCE_LOG);
+		generateJarLidModel(Items.CRIMSON_STEM);
+		generateJarLidModel(Items.WARPED_STEM);
 
-				TFModelTemplates.JAR_LID.create(TwilightForestMod.prefix("block/lid/" + name), lidMapping, this.modelOutput);
-				continue;
-			}
-			if (lid.customPath() != null) name = lid.customPath();
-			TextureMapping lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
-				.put(TextureSlot.SIDE, new Material(Identifier.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath())))
-				.put(TextureSlot.END, new Material(Identifier.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath() + "_top")));
+		generateJarLidModel(Items.STRIPPED_ACACIA_LOG);
+		generateJarLidModel(Items.STRIPPED_BIRCH_LOG);
+		generateJarLidModel(Items.STRIPPED_CHERRY_LOG);
+		generateJarLidModel(Items.STRIPPED_DARK_OAK_LOG);
+		generateJarLidModel(Items.STRIPPED_JUNGLE_LOG);
+		generateJarLidModel(Items.STRIPPED_MANGROVE_LOG);
+		generateJarLidModel(Items.STRIPPED_OAK_LOG);
+		generateJarLidModel(Items.STRIPPED_SPRUCE_LOG);
+		generateJarLidModel(Items.STRIPPED_CRIMSON_STEM);
+		generateJarLidModel(Items.STRIPPED_WARPED_STEM);
 
-			TFModelTemplates.JAR_LID.create(TwilightForestMod.prefix("block/lid/" + name), lidMapping, this.modelOutput);
+		generateJarLidModel(Items.PUMPKIN);
+		generateJarLidModel(Items.BAMBOO_BLOCK);
+		generateJarLidModel(Items.STRIPPED_BAMBOO_BLOCK);
+
+		generateJarLidModel(TFBlocks.MANGROVE_LOG.asItem());
+		generateJarLidModel(TFBlocks.CANOPY_LOG.asItem());
+		generateJarLidModel(TFBlocks.DARK_LOG.asItem());
+		generateJarLidModel(TFBlocks.MINING_LOG.asItem());
+		generateJarLidModel(TFBlocks.SORTING_LOG.asItem());
+		generateJarLidModel(TFBlocks.TIME_LOG.asItem());
+		generateJarLidModel(TFBlocks.TRANSFORMATION_LOG.asItem());
+		generateJarLidModel(TFBlocks.TWILIGHT_OAK_LOG.asItem());
+
+		generateJarLidModel(TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_CANOPY_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_DARK_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_MINING_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_SORTING_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_TIME_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_TRANSFORMATION_LOG.asItem());
+		generateJarLidModel(TFBlocks.STRIPPED_TWILIGHT_OAK_LOG.asItem());
+		generateJarLidModel(TFBlocks.CINDER_LOG.asItem());
+	}
+
+	private void generateJarLidModel(Item item) {
+		Identifier itemId = item.builtInRegistryHolder().key().identifier();
+		Identifier modelId = Identifier.fromNamespaceAndPath(
+			itemId.getNamespace(),
+			"block/lid/" + itemId.getPath()
+		);
+
+		TextureMapping lidMapping;
+
+		if (item == Items.PUMPKIN) {
+			lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
+				.put(
+					TextureSlot.SIDE,
+					new Material(Identifier.withDefaultNamespace("block/pumpkin_side"))
+				)
+				.put(
+					TextureSlot.END,
+					new Material(Identifier.withDefaultNamespace("block/pumpkin_top"))
+				);
+		} else {
+			lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
+				.put(
+					TextureSlot.SIDE,
+					new Material(
+						Identifier.fromNamespaceAndPath(
+							itemId.getNamespace(),
+							"block/" + itemId.getPath()
+						)
+					)
+				)
+				.put(
+					TextureSlot.END,
+					new Material(
+						Identifier.fromNamespaceAndPath(
+							itemId.getNamespace(),
+							"block/" + itemId.getPath() + "_top"
+						)
+					)
+				);
 		}
+
+		TFModelTemplates.JAR_LID.create(
+			modelId,
+			lidMapping,
+			this.modelOutput
+		);
 	}
 
 	@NotNull

@@ -2,9 +2,9 @@
 	"parent": "minecraft:block/block",
 	"render_type": "minecraft:cutout",
 	"textures": {
-		"1": "twilightforest:block/canopy_log_top",
-		"2": "twilightforest:block/canopy_log",
-		"particle": "twilightforest:block/canopy_log_top"
+		"1": "#end",
+		"2": "#side",
+		"particle": "#end"
 	},
 	"elements": [
 		{

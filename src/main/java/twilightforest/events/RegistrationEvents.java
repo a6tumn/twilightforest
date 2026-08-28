@@ -50,6 +50,7 @@ import tamaized.beanification.PostConstruct;
 import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.ChiseledCanopyShelfBlock;
+import twilightforest.block.JarLid;
 import twilightforest.block.entity.DryingRackBlockEntity;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.command.TFCommand;
@@ -191,6 +192,7 @@ public class RegistrationEvents {
 		event.dataPackRegistry(TFRegistries.Keys.DWARF_RABBIT_VARIANT, DwarfRabbitVariant.DIRECT_CODEC, DwarfRabbitVariant.DIRECT_CODEC);
 		event.dataPackRegistry(TFRegistries.Keys.TINY_BIRD_VARIANT, TinyBirdVariant.DIRECT_CODEC, TinyBirdVariant.DIRECT_CODEC);
 		event.dataPackRegistry(TFRegistries.Keys.TRAVELLERS_MODIFIERS, TravellersModifier.CODEC, TravellersModifier.CODEC);
+		event.dataPackRegistry(TFRegistries.Keys.JAR_LIDS, JarLid.CODEC, JarLid.CODEC);
 	}
 
 	public void registerExtraStuff(RegisterEvent evt) {

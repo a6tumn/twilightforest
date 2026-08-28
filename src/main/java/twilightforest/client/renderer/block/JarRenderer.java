@@ -10,125 +10,40 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.registries.DeferredBlock;
+import org.jspecify.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
-import twilightforest.TwilightForestMod;
+import twilightforest.TFRegistries;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
 import twilightforest.client.state.block.JarRenderState;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
-import twilightforest.init.TFBlocks;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO I ideally want to move the jar lids to be data driven
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-	public static final Map<Item, BlockStateModelPart> LIDS = new HashMap<>();
-
-	public record LidResource(
-		Item lid,
-		Identifier identifier,
-		@Nullable String customPath,
-		StandaloneModelKey<BlockStateModelPart> modelKey
-	) {
-		public LidResource(DeferredBlock<?> lid) {
-			this(lid.asItem(), lid.getId(), null);
-		}
-
-		public LidResource(Item item, String path) {
-			this(item, Identifier.fromNamespaceAndPath("minecraft", path), null);
-		}
-
-		public LidResource(Item item, String path, String customPath) {
-			this(item, Identifier.fromNamespaceAndPath("minecraft", path), customPath);
-		}
-
-		private LidResource(
-			Item item,
-			Identifier identifier,
-			@Nullable String customPath
-		) {
-			this(
-				item,
-				identifier,
-				customPath,
-				createModelKey(identifier, customPath)
-			);
-		}
-
-		private static StandaloneModelKey<BlockStateModelPart> createModelKey(
-			Identifier identifier,
-			@Nullable String customPath
-		) {
-			String name = customPath != null ? customPath : identifier.getPath();
-			Identifier model = TwilightForestMod.prefix("block/lid/" + name);
-
-			return new StandaloneModelKey<>(model::toDebugFileName);
-		}
-	}
-
-	public static final Lazy<List<LidResource>> LID_LOCATION_LIST = Lazy.of(() -> List.of(
-		new LidResource(TFBlocks.MANGROVE_LOG),
-		new LidResource(TFBlocks.CANOPY_LOG),
-		new LidResource(TFBlocks.DARK_LOG),
-		new LidResource(TFBlocks.MINING_LOG),
-		new LidResource(TFBlocks.SORTING_LOG),
-		new LidResource(TFBlocks.TIME_LOG),
-		new LidResource(TFBlocks.TRANSFORMATION_LOG),
-		new LidResource(TFBlocks.TWILIGHT_OAK_LOG),
-		new LidResource(Items.ACACIA_LOG, "acacia_log"),
-		new LidResource(Items.BIRCH_LOG, "birch_log"),
-		new LidResource(Items.CHERRY_LOG, "cherry_log"),
-		new LidResource(Items.DARK_OAK_LOG, "dark_oak_log"),
-		new LidResource(Items.JUNGLE_LOG, "jungle_log"),
-		new LidResource(Items.MANGROVE_LOG, "mangrove_log", "vanilla_mangrove_log"),
-		new LidResource(Items.OAK_LOG, "oak_log"),
-		new LidResource(Items.SPRUCE_LOG, "spruce_log"),
-		new LidResource(Items.CRIMSON_STEM, "crimson_stem"),
-		new LidResource(Items.WARPED_STEM, "warped_stem"),
-		new LidResource(TFBlocks.STRIPPED_MANGROVE_LOG),
-		new LidResource(TFBlocks.STRIPPED_CANOPY_LOG),
-		new LidResource(TFBlocks.STRIPPED_DARK_LOG),
-		new LidResource(TFBlocks.STRIPPED_MINING_LOG),
-		new LidResource(TFBlocks.STRIPPED_SORTING_LOG),
-		new LidResource(TFBlocks.STRIPPED_TIME_LOG),
-		new LidResource(TFBlocks.STRIPPED_TRANSFORMATION_LOG),
-		new LidResource(TFBlocks.STRIPPED_TWILIGHT_OAK_LOG),
-		new LidResource(Items.STRIPPED_ACACIA_LOG, "stripped_acacia_log"),
-		new LidResource(Items.STRIPPED_BIRCH_LOG, "stripped_birch_log"),
-		new LidResource(Items.STRIPPED_CHERRY_LOG, "stripped_cherry_log"),
-		new LidResource(Items.STRIPPED_DARK_OAK_LOG, "stripped_dark_oak_log"),
-		new LidResource(Items.STRIPPED_JUNGLE_LOG, "stripped_jungle_log"),
-		new LidResource(Items.STRIPPED_MANGROVE_LOG, "stripped_mangrove_log", "vanilla_stripped_mangrove_log"),
-		new LidResource(Items.STRIPPED_OAK_LOG, "stripped_oak_log"),
-		new LidResource(Items.STRIPPED_SPRUCE_LOG, "stripped_spruce_log"),
-		new LidResource(Items.STRIPPED_CRIMSON_STEM, "stripped_crimson_stem"),
-		new LidResource(Items.STRIPPED_WARPED_STEM, "stripped_warped_stem"),
-		new LidResource(TFBlocks.CINDER_LOG),
-		new LidResource(Items.PUMPKIN, "pumpkin"),
-		new LidResource(Items.BAMBOO_BLOCK, "bamboo_block"),
-		new LidResource(Items.STRIPPED_BAMBOO_BLOCK, "stripped_bamboo_block")
-	));
+	public static final Map<ResourceKey<Item>, StandaloneModelKey<BlockStateModelPart>> JAR_LID_KEYS = new HashMap<>();
 
 //	protected final BlockRenderDispatcher blockRenderer;
 	protected static final float WOBBLE_AMPLITUDE = 0.125F;
 
+	private final ModelManager modelManager;
+
 	public JarRenderer(BlockEntityRendererProvider.Context context) {
+		this.modelManager = context.blockModelResolver().modelManager;
 //		this.blockRenderer = context.getBlockRenderDispatcher();
 	}
 
@@ -138,11 +53,36 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	}
 
 	@Override
-	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
-		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
-		state.lid = blockEntity.lid;
+	public void extractRenderState(
+		T blockEntity,
+		JarRenderState state,
+		float partialTicks,
+		Vec3 cameraPosition,
+		ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+	) {
+		BlockEntityRenderer.super.extractRenderState(
+			blockEntity,
+			state,
+			partialTicks,
+			cameraPosition,
+			breakProgress
+		);
+
+		state.lidKey = null;
+		var level = blockEntity.getLevel();
+		if (level != null && blockEntity.lid != null) {
+			state.lidKey = JAR_LID_KEYS.get( blockEntity.lid.builtInRegistryHolder().key() );
+		}
+
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
-		state.gameTime = blockEntity.getLevel() != null ? ((float) (blockEntity.getLevel().getGameTime() - blockEntity.wobbleStartedAtTick) + blockEntity.getLevel().getGameTime()) : 0L;
+		state.gameTime = level != null
+			? ((float) (level.getGameTime() - blockEntity.wobbleStartedAtTick)
+			+ level.getGameTime())
+			: 0L;
+	}
+
+	private static StandaloneModelKey<BlockStateModelPart> modelKey(Identifier model) {
+		return new StandaloneModelKey<>(model::toDebugFileName);
 	}
 
 	@Override
@@ -151,11 +91,17 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	}
 
 	@Override
-	public void submit(JarRenderState blockEntity, PoseStack poseStack, SubmitNodeCollector buffer, CameraRenderState camera) {
+	public void submit(
+		JarRenderState blockEntity,
+		PoseStack poseStack,
+		SubmitNodeCollector buffer,
+		CameraRenderState camera
+	) {
 		poseStack.pushPose();
 		poseStack.translate(0.5, 0.0, 0.5);
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.translate(-0.5, 0.0, -0.5);
+
 		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
 
 		if (wobbleStyle != null) {
@@ -176,23 +122,19 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			}
 		}
 
-		BlockStateModelPart lid = LIDS.get(blockEntity.lid);
-		if (lid != null) {
-			buffer.submitMultiLayerBlockModel(
-				poseStack,
-				List.of(lid),
-				false,
-				new int[0],
-				blockEntity.lightCoords,
-				OverlayTexture.NO_OVERLAY,
-				0
-			);
+		if (blockEntity.lidKey != null) {
+			BlockStateModelPart lid = modelManager.getStandaloneModel(blockEntity.lidKey);
+			if (lid != null) {
+				buffer.submitMultiLayerBlockModel(
+					poseStack,
+					List.of(lid),
+					false,
+					new int[0],
+					blockEntity.lightCoords,
+					OverlayTexture.NO_OVERLAY,
+					0 );
+			}
 		}
-
-//		BlockState state = blockEntity.getBlockState();
-//		if (LIDS.containsKey(blockEntity.lid)) renderModel(LIDS.get(blockEntity.lid), state, this.blockRenderer, poseStack, buffer, packedLight, packedOverlay);
-//		renderJarModel(state, this.blockRenderer, poseStack, buffer, packedLight, packedOverlay);
-//		this.renderContents(blockEntity, partialTick, poseStack, buffer, packedLight, packedOverlay);
 
 		poseStack.popPose();
 	}

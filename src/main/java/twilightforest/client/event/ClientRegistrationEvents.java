@@ -17,6 +17,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
@@ -26,8 +27,11 @@ import net.minecraft.client.resources.model.sprite.AtlasManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
@@ -48,6 +52,7 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
+import twilightforest.TFRegistries;
 import twilightforest.TwilightForestMod;
 import twilightforest.client.*;
 import twilightforest.client.model.TFModelLayers;
@@ -78,6 +83,7 @@ import twilightforest.client.renderer.tooltip.ItemDisplayTooltipComponent;
 import twilightforest.client.renderer.tooltip.PotionFlaskTooltipComponent;
 import twilightforest.client.renderer.tooltip.TravellersBeltTooltipComponent;
 import twilightforest.init.*;
+import twilightforest.init.custom.JarLids;
 import twilightforest.item.ArcticArmorItem;
 import twilightforest.item.PotionFlaskItem;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
@@ -87,6 +93,8 @@ import twilightforest.network.GogglesZoomPacket;
 import twilightforest.network.GradualGlidePacket;
 import twilightforest.util.woods.TFWoodTypes;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Component(dist = Dist.CLIENT)
@@ -96,7 +104,6 @@ public class ClientRegistrationEvents {
 	private void setup(IEventBus bus) {
 		bus.addListener(EntityRenderersEvent.AddLayers.class, this::attachRenderLayers);
 		bus.addListener(this::bakeCustomModels);
-		bus.addListener(this::cacheJarLids);
 		bus.addListener(this::clientSetup);
 		bus.addListener(this::registerStandalone);
 		bus.addListener(this::registerClientReloadListeners);
@@ -189,30 +196,86 @@ public class ClientRegistrationEvents {
 		Identifier trophy_minor = TwilightForestMod.prefix("item/trophy_minor");
 		Identifier trophy_quest = TwilightForestMod.prefix("item/trophy_quest");
 
-		event.register(new StandaloneModelKey<>(ShieldLayer.LOC::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(ShieldLayer.LOC));
-		event.register(new StandaloneModelKey<>(trophy::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy));
-		event.register(new StandaloneModelKey<>(trophy_minor::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_minor));
-		event.register(new StandaloneModelKey<>(trophy_quest::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_quest));
-		event.register(new StandaloneModelKey<>(TrollsteinnModel.LIT_TROLLSTEINN::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(TrollsteinnModel.LIT_TROLLSTEINN));
+		event.register(
+			new StandaloneModelKey<>(ShieldLayer.LOC::toDebugFileName),
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(ShieldLayer.LOC)
+		);
+		event.register(
+			new StandaloneModelKey<>(trophy::toDebugFileName),
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy)
+		);
+		event.register(
+			new StandaloneModelKey<>(trophy_minor::toDebugFileName),
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_minor)
+		);
+		event.register(
+			new StandaloneModelKey<>(trophy_quest::toDebugFileName),
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(trophy_quest)
+		);
+		event.register(
+			new StandaloneModelKey<>(TrollsteinnModel.LIT_TROLLSTEINN::toDebugFileName),
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(TrollsteinnModel.LIT_TROLLSTEINN)
+		);
 
-		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-			Identifier location = lid.identifier();
-			String name = lid.customPath() != null ? lid.customPath() : location.getPath();
-			Identifier modelKey = TwilightForestMod.prefix("block/lid/" + name);
-			event.register(lid.modelKey(), SimpleUnbakedStandaloneModel.simpleModelWrapper(modelKey));
-		}
+		registerJarLidStandalone(event, Items.ACACIA_LOG);
+		registerJarLidStandalone(event, Items.BIRCH_LOG);
+		registerJarLidStandalone(event, Items.CHERRY_LOG);
+		registerJarLidStandalone(event, Items.DARK_OAK_LOG);
+		registerJarLidStandalone(event, Items.JUNGLE_LOG);
+		registerJarLidStandalone(event, Items.MANGROVE_LOG);
+		registerJarLidStandalone(event, Items.OAK_LOG);
+		registerJarLidStandalone(event, Items.SPRUCE_LOG);
+		registerJarLidStandalone(event, Items.CRIMSON_STEM);
+		registerJarLidStandalone(event, Items.WARPED_STEM);
+		registerJarLidStandalone(event, Items.STRIPPED_ACACIA_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_BIRCH_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_CHERRY_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_DARK_OAK_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_JUNGLE_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_MANGROVE_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_OAK_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_SPRUCE_LOG);
+		registerJarLidStandalone(event, Items.STRIPPED_CRIMSON_STEM);
+		registerJarLidStandalone(event, Items.STRIPPED_WARPED_STEM);
+		registerJarLidStandalone(event, Items.PUMPKIN);
+		registerJarLidStandalone(event, Items.BAMBOO_BLOCK);
+		registerJarLidStandalone(event, Items.STRIPPED_BAMBOO_BLOCK);
+
+		registerJarLidStandalone(event, TFBlocks.MANGROVE_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.CANOPY_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.DARK_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.MINING_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.SORTING_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.TIME_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.TRANSFORMATION_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.TWILIGHT_OAK_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_CANOPY_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_DARK_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_MINING_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_SORTING_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_TIME_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_TRANSFORMATION_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.STRIPPED_TWILIGHT_OAK_LOG.asItem());
+		registerJarLidStandalone(event, TFBlocks.CINDER_LOG.asItem());
 	}
 
-	private void cacheJarLids(ModelEvent.BakingCompleted event) {
-		var models = event.getBakingResult().standaloneModels();
+	private void registerJarLidStandalone(
+		ModelEvent.RegisterStandalone event,
+		Item item
+	) {
+		ResourceKey<Item> itemKey = item.builtInRegistryHolder().key();
+		Identifier model = JarLids.model(item);
 
-		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
-			var model = models.get(lid.modelKey());
+		StandaloneModelKey<BlockStateModelPart> key =
+			new StandaloneModelKey<>(model::toDebugFileName);
 
-			if (model != null) {
-				JarRenderer.LIDS.put(lid.lid(), model);
-			}
-		}
+		event.register(
+			key,
+			SimpleUnbakedStandaloneModel.simpleModelWrapper(model)
+		);
+
+		JarRenderer.JAR_LID_KEYS.put(itemKey, key);
 	}
 
 	private void clientSetup(FMLClientSetupEvent evt) {
