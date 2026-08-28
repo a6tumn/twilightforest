@@ -197,19 +197,22 @@ public class ClientRegistrationEvents {
 
 		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
 			Identifier location = lid.identifier();
-			String name = location.getPath();
-			if (lid.customPath() != null) name = lid.customPath();
+			String name = lid.customPath() != null ? lid.customPath() : location.getPath();
 			Identifier modelKey = TwilightForestMod.prefix("block/lid/" + name);
-			event.register(new StandaloneModelKey<>(modelKey::toDebugFileName), SimpleUnbakedStandaloneModel.simpleModelWrapper(modelKey));
+			event.register(lid.modelKey(), SimpleUnbakedStandaloneModel.simpleModelWrapper(modelKey));
 		}
 	}
 
 	private void cacheJarLids(ModelEvent.BakingCompleted event) {
-		JarRenderer.LID_LOCATION_LIST.get().forEach((lid) -> {
-			String name = lid.identifier().getPath();
-			if (lid.customPath() != null) name = lid.customPath();
-//			JarRenderer.LIDS.put(lid.lid(), event.getModels().get(ModelResourceLocation.standalone(TwilightForestMod.prefix("block/lid/" + name))));
-		});
+		var models = event.getBakingResult().standaloneModels();
+
+		for (JarRenderer.LidResource lid : JarRenderer.LID_LOCATION_LIST.get()) {
+			var model = models.get(lid.modelKey());
+
+			if (model != null) {
+				JarRenderer.LIDS.put(lid.lid(), model);
+			}
+		}
 	}
 
 	private void clientSetup(FMLClientSetupEvent evt) {

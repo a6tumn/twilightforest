@@ -2,32 +2,29 @@ package twilightforest.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
+import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
 import twilightforest.client.state.block.JarRenderState;
@@ -41,9 +38,14 @@ import java.util.Map;
 
 //TODO I ideally want to move the jar lids to be data driven
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
-//	public static final Map<Item, BakedModel> LIDS = new HashMap<>();
+	public static final Map<Item, BlockStateModelPart> LIDS = new HashMap<>();
 
-	public record LidResource(Item lid, Identifier identifier, @Nullable String customPath) {
+	public record LidResource(
+		Item lid,
+		Identifier identifier,
+		@Nullable String customPath,
+		StandaloneModelKey<BlockStateModelPart> modelKey
+	) {
 		public LidResource(DeferredBlock<?> lid) {
 			this(lid.asItem(), lid.getId(), null);
 		}
@@ -54,6 +56,29 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		public LidResource(Item item, String path, String customPath) {
 			this(item, Identifier.fromNamespaceAndPath("minecraft", path), customPath);
+		}
+
+		private LidResource(
+			Item item,
+			Identifier identifier,
+			@Nullable String customPath
+		) {
+			this(
+				item,
+				identifier,
+				customPath,
+				createModelKey(identifier, customPath)
+			);
+		}
+
+		private static StandaloneModelKey<BlockStateModelPart> createModelKey(
+			Identifier identifier,
+			@Nullable String customPath
+		) {
+			String name = customPath != null ? customPath : identifier.getPath();
+			Identifier model = TwilightForestMod.prefix("block/lid/" + name);
+
+			return new StandaloneModelKey<>(model::toDebugFileName);
 		}
 	}
 
@@ -115,6 +140,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	@Override
 	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.CrumblingOverlay breakProgress) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+		state.lid = blockEntity.lid;
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
 		state.gameTime = blockEntity.getLevel() != null ? ((float) (blockEntity.getLevel().getGameTime() - blockEntity.wobbleStartedAtTick) + blockEntity.getLevel().getGameTime()) : 0L;
 	}
@@ -148,6 +174,19 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 					poseStack.rotateAround(Axis.YP.rotation(f5 * f6), 0.5F, 0.0F, 0.5F);
 				}
 			}
+		}
+
+		BlockStateModelPart lid = LIDS.get(blockEntity.lid);
+		if (lid != null) {
+			buffer.submitMultiLayerBlockModel(
+				poseStack,
+				List.of(lid),
+				false,
+				new int[0],
+				blockEntity.lightCoords,
+				OverlayTexture.NO_OVERLAY,
+				0
+			);
 		}
 
 //		BlockState state = blockEntity.getBlockState();
