@@ -5,6 +5,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -14,8 +15,10 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
@@ -53,9 +56,11 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
-		state.jarModel = new BlockModelRenderState();
+		state.blockStateModel = this.blockModelResolver.modelManager.getBlockStateModelSet().get(blockEntity.getBlockState());
+
+		state.blockModelRenderState = new BlockModelRenderState();
 		this.blockModelResolver.update(
-			state.jarModel,
+			state.blockModelRenderState,
 			blockEntity.getBlockState(),
 			BlockDisplayContext.create()
 		);
@@ -103,13 +108,22 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			}
 		}
 
-		blockEntity.jarModel.submit(
+		blockEntity.blockModelRenderState.submit(
 			poseStack,
 			buffer,
 			blockEntity.lightCoords,
 			OverlayTexture.NO_OVERLAY,
 			0
 		);
+
+		if (blockEntity.breakProgress != null) {
+			buffer.submitBreakingBlockModel(
+				poseStack,
+				blockEntity.blockStateModel,
+				42L,
+				blockEntity.breakProgress.progress()
+			);
+		}
 
 		if (blockEntity.lidKey != null) {
 			BlockStateModelPart lid = blockModelResolver.modelManager.getStandaloneModel(blockEntity.lidKey);
@@ -121,16 +135,26 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 					new int[0],
 					blockEntity.lightCoords,
 					OverlayTexture.NO_OVERLAY,
-					0 );
+					0
+				);
+
+				if (blockEntity.breakProgress != null) {
+					buffer.submitBreakingBlockModel(
+						poseStack,
+						singlePartModel(lid),
+						42L,
+						blockEntity.breakProgress.progress()
+					);
+				}
 			}
 		}
 
-		if (blockEntity.itemRenderState != null) {
+		if (blockEntity.itemStackRenderState != null) {
 			poseStack.pushPose();
 			poseStack.translate(0.5D, 0.4375D, 0.5D);
 			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(blockEntity.itemRotation)));
 			poseStack.scale(0.5F, 0.5F, 0.5F);
-			blockEntity.itemRenderState.submit(
+			blockEntity.itemStackRenderState.submit(
 				poseStack,
 				buffer,
 				blockEntity.lightCoords,
@@ -141,6 +165,25 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		}
 
 		poseStack.popPose();
+	}
+
+	private static BlockStateModel singlePartModel(BlockStateModelPart part) {
+		return new BlockStateModel() {
+			@Override
+			public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
+				parts.add(part);
+			}
+
+			@Override
+			public Material.Baked particleMaterial() {
+				return part.particleMaterial();
+			}
+
+			@Override
+			public int materialFlags() {
+				return part.materialFlags();
+			}
+		};
 	}
 
 	@Configurable
@@ -160,14 +203,14 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		public void extractRenderState(MasonJarBlockEntity blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 			super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
-			state.itemRenderState = null;
+			state.itemStackRenderState = null;
 			state.itemRotation = 0;
 
 			ItemStack stack = blockEntity.getItemHandler().getItem();
 			if (!stack.isEmpty()) {
-				state.itemRenderState = new ItemStackRenderState();
+				state.itemStackRenderState = new ItemStackRenderState();
 				this.itemModelResolver.updateForTopItem(
-					state.itemRenderState,
+					state.itemStackRenderState,
 					stack,
 					itemDisplayContextEnumExtension.JARRED,
 					null,
