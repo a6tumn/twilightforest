@@ -49,7 +49,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.gui.map.RegisterMapDecorationRenderersEvent;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
@@ -59,7 +58,6 @@ import twilightforest.client.model.armor.*;
 import twilightforest.client.model.block.BrazierModel;
 import twilightforest.client.model.block.ReactorDebrisModel;
 import twilightforest.client.model.block.aurorablock.UnbakedNoiseVaryingBlockStateModel;
-import twilightforest.client.model.block.carpet.RoyalRagsModelLoader;
 import twilightforest.client.model.block.connected.ConnectedTextureModelLoader;
 import twilightforest.client.model.block.forcefield.ForceFieldModelLoader;
 import twilightforest.client.model.block.giantblock.UnbakedGiantBlockStateModel;
@@ -88,8 +86,6 @@ import twilightforest.item.PotionFlaskItem;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.TravellersArmorItem;
 import twilightforest.item.travellers_gear.TravellersGogglesItem;
-import twilightforest.network.GogglesZoomPacket;
-import twilightforest.network.GradualGlidePacket;
 import twilightforest.util.woods.TFWoodTypes;
 
 import java.util.Objects;
@@ -248,7 +244,7 @@ public class ClientRegistrationEvents {
 		Identifier model = JarLids.getModelLocation(itemKey);
 		StandaloneModelKey<BlockStateModelPart> key = new StandaloneModelKey<>(model::toDebugFileName);
 		event.register(key, SimpleUnbakedStandaloneModel.simpleModelWrapper(model));
-		ClientJarLidRegistry.register(itemKey, key);
+		JarRenderer.LidModelKeyRegistry.register(itemKey, key);
 	}
 
 	private void clientSetup(FMLClientSetupEvent evt) {

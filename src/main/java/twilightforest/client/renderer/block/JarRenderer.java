@@ -12,7 +12,9 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
@@ -24,11 +26,12 @@ import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
-import twilightforest.client.ClientJarLidRegistry;
 import twilightforest.client.state.block.JarRenderState;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
 //	protected final BlockRenderDispatcher blockRenderer;
@@ -53,7 +56,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		state.lidKey = null;
 		var level = blockEntity.getLevel();
 		if (level != null) {
-			state.lidKey = ClientJarLidRegistry.get(blockEntity.lid.builtInRegistryHolder().key());
+			state.lidKey = LidModelKeyRegistry.get(blockEntity.lid.builtInRegistryHolder().key());
 		}
 
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
@@ -112,33 +115,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		poseStack.popPose();
 	}
 
-//	public static void renderJarModel(BlockState blockState, BlockRenderDispatcher blockRenderer, PoseStack stack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-//		BakedModel bakedModel = blockRenderer.getBlockModel(blockState);
-//		renderModel(bakedModel, blockState, blockRenderer, stack, buffer, packedLight, packedOverlay);
-//	}
-
-//	public static void renderModel(BakedModel bakedModel, BlockState blockState, BlockRenderDispatcher blockRenderer, PoseStack stack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
-//		int color = blockRenderer.blockColors.getColor(blockState, null, null, 0);
-//		float r = (float) (color >> 16 & 0xFF) / 255.0F;
-//		float g = (float) (color >> 8 & 0xFF) / 255.0F;
-//		float b = (float) (color & 0xFF) / 255.0F;
-//		for (RenderType rt : bakedModel.getRenderTypes(blockState, RandomSource.create(42), ModelData.EMPTY))
-//			blockRenderer.getModelRenderer()
-//				.renderModel(
-//					stack.last(),
-//					buffer.getBuffer(RenderTypeHelper.getEntityRenderType(rt, false)),
-//					blockState,
-//					bakedModel,
-//					r,
-//					g,
-//					b,
-//					packedLight,
-//					packedOverlay,
-//					ModelData.EMPTY,
-//					rt
-//				);
-//	}
-
 	public void renderContents(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
 
 	}
@@ -176,6 +152,22 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 				poseStack.popPose();
 			}
+		}
+	}
+
+	public static final class LidModelKeyRegistry {
+		private static final Map<ResourceKey<Item>, StandaloneModelKey<BlockStateModelPart>> JAR_LID_KEYS = new HashMap<>();
+
+		public static void register(ResourceKey<Item> item, StandaloneModelKey<BlockStateModelPart> key) {
+			JAR_LID_KEYS.put(item, key);
+		}
+
+		public static StandaloneModelKey<BlockStateModelPart> get(ResourceKey<Item> item) {
+			return JAR_LID_KEYS.get(item);
+		}
+
+		public static void clear() {
+			JAR_LID_KEYS.clear();
 		}
 	}
 }

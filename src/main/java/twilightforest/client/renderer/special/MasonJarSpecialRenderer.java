@@ -22,7 +22,7 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 import tamaized.beanification.Autowired;
-import twilightforest.client.ClientJarLidRegistry;
+import twilightforest.client.renderer.block.JarRenderer;
 import twilightforest.components.item.JarLid;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 import twilightforest.init.TFDataComponents;
@@ -54,7 +54,7 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 				BuiltInRegistries.ITEM.getResourceKey(lid).orElse(null);
 
 			if (lidItemKey != null) {
-				StandaloneModelKey<BlockStateModelPart> modelKey = ClientJarLidRegistry.get(lidItemKey);
+				StandaloneModelKey<BlockStateModelPart> modelKey = JarRenderer.LidModelKeyRegistry.get(lidItemKey);
 				BlockStateModelPart model = this.modelManager().getStandaloneModel(modelKey);
 
 				if (model != null) {

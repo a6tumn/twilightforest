@@ -39,7 +39,9 @@ import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFSounds;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
@@ -116,7 +118,7 @@ public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock 
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof JarBlockEntity jarBlockEntity && hitResult.getLocation().y >= pos.getY() + (14.0D / 16.0D)) {
 			Item lid = stack.getItem();
-			if (lid != jarBlockEntity.lid && JarBlockEntity.REGISTERED_LOG_LIDS.get(lid) instanceof BooleanSupplier check && check.getAsBoolean())  {
+			if (lid != jarBlockEntity.lid && LidInteractionRegistry.getRegisteredLids().get(lid) instanceof BooleanSupplier check && check.getAsBoolean())  {
 				jarBlockEntity.lid = lid;
 				if (level instanceof ServerLevel serverLevel) {
 					serverLevel.playSound(null, pos, TFSounds.JAR_LID_SWAP.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -139,6 +141,28 @@ public class JarBlock extends BaseEntityBlock implements SimpleWaterloggedBlock 
 			return InteractionResult.SUCCESS;
 		} else {
 			return InteractionResult.PASS;
+		}
+	}
+
+	public static final class LidInteractionRegistry {
+		private static final Map<Item, BooleanSupplier> REGISTERED_LIDS = new HashMap<>();
+
+		public static void register(Item... items) {
+			for (Item item : items) {
+				register(item);
+			}
+		}
+
+		public static void register(Item item) {
+			registerConditional(item, () -> true);
+		}
+
+		public static void registerConditional(Item item, BooleanSupplier condition) {
+			REGISTERED_LIDS.put(item, condition);
+		}
+
+		public static Map<Item, BooleanSupplier> getRegisteredLids() {
+			return REGISTERED_LIDS;
 		}
 	}
 }
