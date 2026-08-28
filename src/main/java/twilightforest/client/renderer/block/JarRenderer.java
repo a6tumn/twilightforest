@@ -75,6 +75,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		poseStack.translate(0.5, 0.0, 0.5);
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
 		poseStack.translate(-0.5, 0.0, -0.5);
+
 		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
 		if (wobbleStyle != null) {
 			float f = blockEntity.gameTime / (float) wobbleStyle.duration;
@@ -93,6 +94,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 				}
 			}
 		}
+
 		if (blockEntity.lidKey != null) {
 			BlockStateModelPart lid = modelManager.getStandaloneModel(blockEntity.lidKey);
 			if (lid != null) {
@@ -109,15 +111,9 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 
 		if (blockEntity.itemRenderState != null) {
 			poseStack.pushPose();
-
 			poseStack.translate(0.5D, 0.4375D, 0.5D);
-			poseStack.mulPose(
-				Axis.YN.rotationDegrees(
-					RotationSegment.convertToDegrees(blockEntity.itemRotation)
-				)
-			);
+			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(blockEntity.itemRotation)));
 			poseStack.scale(0.5F, 0.5F, 0.5F);
-
 			blockEntity.itemRenderState.submit(
 				poseStack,
 				buffer,
@@ -125,7 +121,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 				OverlayTexture.NO_OVERLAY,
 				0
 			);
-
 			poseStack.popPose();
 		}
 
@@ -146,27 +141,15 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		}
 
 		@Override
-		public void extractRenderState(
-			MasonJarBlockEntity blockEntity,
-			JarRenderState state,
-			float partialTicks,
-			Vec3 cameraPosition,
-			ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
-		) {
-			super.extractRenderState(
-				blockEntity,
-				state,
-				partialTicks,
-				cameraPosition,
-				breakProgress
-			);
+		public void extractRenderState(MasonJarBlockEntity blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+			super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
 			state.itemRenderState = null;
+			state.itemRotation = 0;
 
 			ItemStack stack = blockEntity.getItemHandler().getItem();
 			if (!stack.isEmpty()) {
 				state.itemRenderState = new ItemStackRenderState();
-
 				this.itemModelResolver.updateForTopItem(
 					state.itemRenderState,
 					stack,
@@ -175,7 +158,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 					null,
 					0
 				);
-
 				state.itemRotation = blockEntity.getItemRotation();
 			}
 		}
