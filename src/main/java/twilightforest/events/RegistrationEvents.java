@@ -511,6 +511,7 @@ public class RegistrationEvents {
 			JarBlockEntity.addLid(Items.SPRUCE_LOG);
 			JarBlockEntity.addLid(Items.CRIMSON_STEM);
 			JarBlockEntity.addLid(Items.WARPED_STEM);
+			JarBlockEntity.addLid(Items.PALE_OAK_LOG);
 			JarBlockEntity.addLid(TFBlocks.STRIPPED_MANGROVE_LOG.asItem());
 			JarBlockEntity.addLid(TFBlocks.STRIPPED_CANOPY_LOG.asItem());
 			JarBlockEntity.addLid(TFBlocks.STRIPPED_DARK_LOG.asItem());
@@ -529,6 +530,7 @@ public class RegistrationEvents {
 			JarBlockEntity.addLid(Items.STRIPPED_SPRUCE_LOG);
 			JarBlockEntity.addLid(Items.STRIPPED_CRIMSON_STEM);
 			JarBlockEntity.addLid(Items.STRIPPED_WARPED_STEM);
+			JarBlockEntity.addLid(Items.STRIPPED_PALE_OAK_LOG);
 			JarBlockEntity.addLid(TFBlocks.CINDER_LOG.asItem());
 			JarBlockEntity.addLid(Items.BAMBOO_BLOCK);
 			JarBlockEntity.addLid(Items.STRIPPED_BAMBOO_BLOCK);

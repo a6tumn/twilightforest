@@ -607,6 +607,7 @@ public class BlockModelGenerator extends BlockModelBuilders {
 		this.generateJarLidModel(Items.SPRUCE_LOG);
 		this.generateJarLidModel(Items.CRIMSON_STEM);
 		this.generateJarLidModel(Items.WARPED_STEM);
+		this.generateJarLidModel(Items.PALE_OAK_LOG);
 		this.generateJarLidModel(Items.STRIPPED_ACACIA_LOG);
 		this.generateJarLidModel(Items.STRIPPED_BIRCH_LOG);
 		this.generateJarLidModel(Items.STRIPPED_CHERRY_LOG);
@@ -617,6 +618,7 @@ public class BlockModelGenerator extends BlockModelBuilders {
 		this.generateJarLidModel(Items.STRIPPED_SPRUCE_LOG);
 		this.generateJarLidModel(Items.STRIPPED_CRIMSON_STEM);
 		this.generateJarLidModel(Items.STRIPPED_WARPED_STEM);
+		this.generateJarLidModel(Items.STRIPPED_PALE_OAK_LOG);
 		this.generateJarLidModel(Items.PUMPKIN);
 		this.generateJarLidModel(Items.BAMBOO_BLOCK);
 		this.generateJarLidModel(Items.STRIPPED_BAMBOO_BLOCK);

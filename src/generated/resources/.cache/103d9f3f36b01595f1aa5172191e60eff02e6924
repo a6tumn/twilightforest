@@ -1,4 +1,4 @@
-// 26.1.2	2026-08-28T13:55:22.749136896	Registries
+// 26.1.2	2026-08-28T16:08:02.884080872	Registries
 2feb5f4d74095ac262c2be4dcb73df03a690ff10 data/minecraft/twilight/jar_lids/acacia_log.json
 a056ce6a0c5207bb82b17009883299a6ff7a698c data/minecraft/twilight/jar_lids/bamboo_block.json
 8004ede27c17ebe5179d47ca2109f3fa1e24150b data/minecraft/twilight/jar_lids/birch_log.json
@@ -8,6 +8,7 @@ a056ce6a0c5207bb82b17009883299a6ff7a698c data/minecraft/twilight/jar_lids/bamboo
 d2d2b45cb5e00aa03c7e1d3c47ec3c623bae75ff data/minecraft/twilight/jar_lids/jungle_log.json
 88729da4229a05ed6baf39f9a657f22a5642035d data/minecraft/twilight/jar_lids/mangrove_log.json
 7f063836df3c07190ace8928576b33289d73229f data/minecraft/twilight/jar_lids/oak_log.json
+389c27d0092b8f4892ea93661439f7f53866d500 data/minecraft/twilight/jar_lids/pale_oak_log.json
 9559f1c44489d7358fa7410fca01516f62663234 data/minecraft/twilight/jar_lids/pumpkin.json
 f9ab16ba8c22091fc4db169af210966fd6ee7161 data/minecraft/twilight/jar_lids/spruce_log.json
 6d332422bed82ea5917de13ca6137244a13b1acf data/minecraft/twilight/jar_lids/stripped_acacia_log.json
@@ -19,6 +20,7 @@ c52bd5e76a8dccd37dcccef63e2978d86e23b3a6 data/minecraft/twilight/jar_lids/stripp
 d399e37795e47be8c0377c6563047849cafee65f data/minecraft/twilight/jar_lids/stripped_jungle_log.json
 4705b0301365bb9d02f7c4075d1b911f5700a033 data/minecraft/twilight/jar_lids/stripped_mangrove_log.json
 198d93cf12f997f02c9773f30010724b9ef31662 data/minecraft/twilight/jar_lids/stripped_oak_log.json
+921b0bbf5f2a437028164ea503b05cb103b16a28 data/minecraft/twilight/jar_lids/stripped_pale_oak_log.json
 bb1cbca2dfe63b654aeedcb1283b1dcf325c6fc2 data/minecraft/twilight/jar_lids/stripped_spruce_log.json
 f5fc7722a4d3f09b21f8cbcdd9abb6fd5ad7dccf data/minecraft/twilight/jar_lids/stripped_warped_stem.json
 05779b6a9bca4a18c65a4a80a12c48e34681e0f5 data/minecraft/twilight/jar_lids/warped_stem.json

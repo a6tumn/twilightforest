@@ -1,4 +1,4 @@
-// 26.1.2	2026-08-28T13:55:22.752530237	Model Definitions - twilightforest
+// 26.1.2	2026-08-28T16:10:05.830162414	Model Definitions - twilightforest
 b88ae01506644a0b5192d29942d0f4843b31c196 assets/minecraft/models/block/lid/acacia_log.json
 716bb0a3104f66f022128546d8f56027506551a5 assets/minecraft/models/block/lid/bamboo_block.json
 ada2d8a3eb3ff27a5cad0f21d4c1561ce8d7bc8a assets/minecraft/models/block/lid/birch_log.json
@@ -8,6 +8,7 @@ a0b4ee38f12ddc70ad57689df5d303397e78b384 assets/minecraft/models/block/lid/dark_
 db6a9d6d158eb3a5a1a16b28d4489f3f480265b5 assets/minecraft/models/block/lid/jungle_log.json
 0811607dbaecb6aa53733a7451c51cb7f80503d4 assets/minecraft/models/block/lid/mangrove_log.json
 6d4cf4d4748111a48745b1216ee0cf90df30c06c assets/minecraft/models/block/lid/oak_log.json
+fa9b1f04c8da3dc414c4b0babb89783488699e02 assets/minecraft/models/block/lid/pale_oak_log.json
 452d508621d48693bb31b93afb52d4155144efdd assets/minecraft/models/block/lid/pumpkin.json
 6000c4fffd48f4a6cc1b09d7403863051974e1ef assets/minecraft/models/block/lid/spruce_log.json
 e1b506e4d7736bcfd9ebcd22c2dd9b526d52acc3 assets/minecraft/models/block/lid/stripped_acacia_log.json
@@ -19,6 +20,7 @@ ed61da99c2d720bcc4accc4041eb4af3ff37b01b assets/minecraft/models/block/lid/strip
 6fb0f4ad22d0737306252a4c5dd1a81ebf51ac4f assets/minecraft/models/block/lid/stripped_jungle_log.json
 6d2ffab1908613c481d6d89a84048e8e5d644905 assets/minecraft/models/block/lid/stripped_mangrove_log.json
 a2fbab2a89e8996c546ca79e99f79e92961ad456 assets/minecraft/models/block/lid/stripped_oak_log.json
+659c6b354b7ecf79232a316efc50cf62a24c8de1 assets/minecraft/models/block/lid/stripped_pale_oak_log.json
 1b13a84d58337e1bb7b0212c229ec077d779e3e8 assets/minecraft/models/block/lid/stripped_spruce_log.json
 99f99e30899b7727d42e74dcc7c056e187a4609e assets/minecraft/models/block/lid/stripped_warped_stem.json
 c03e000113653b1c88763894dd1ff9f01dbbd496 assets/minecraft/models/block/lid/warped_stem.json

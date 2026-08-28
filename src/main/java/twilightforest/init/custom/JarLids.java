@@ -21,6 +21,7 @@ public final class JarLids {
 		register(context, Items.SPRUCE_LOG);
 		register(context, Items.CRIMSON_STEM);
 		register(context, Items.WARPED_STEM);
+		register(context, Items.PALE_OAK_LOG);
 		register(context, Items.STRIPPED_ACACIA_LOG);
 		register(context, Items.STRIPPED_BIRCH_LOG);
 		register(context, Items.STRIPPED_CHERRY_LOG);
@@ -31,6 +32,7 @@ public final class JarLids {
 		register(context, Items.STRIPPED_SPRUCE_LOG);
 		register(context, Items.STRIPPED_CRIMSON_STEM);
 		register(context, Items.STRIPPED_WARPED_STEM);
+		register(context, Items.STRIPPED_PALE_OAK_LOG);
 
 		register(context, Items.PUMPKIN);
 		register(context, Items.BAMBOO_BLOCK);

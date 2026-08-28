@@ -209,6 +209,7 @@ public class ClientRegistrationEvents {
 		registerJarLidStandalone(event, Items.SPRUCE_LOG);
 		registerJarLidStandalone(event, Items.CRIMSON_STEM);
 		registerJarLidStandalone(event, Items.WARPED_STEM);
+		registerJarLidStandalone(event, Items.PALE_OAK_LOG);
 		registerJarLidStandalone(event, Items.STRIPPED_ACACIA_LOG);
 		registerJarLidStandalone(event, Items.STRIPPED_BIRCH_LOG);
 		registerJarLidStandalone(event, Items.STRIPPED_CHERRY_LOG);
@@ -219,6 +220,7 @@ public class ClientRegistrationEvents {
 		registerJarLidStandalone(event, Items.STRIPPED_SPRUCE_LOG);
 		registerJarLidStandalone(event, Items.STRIPPED_CRIMSON_STEM);
 		registerJarLidStandalone(event, Items.STRIPPED_WARPED_STEM);
+		registerJarLidStandalone(event, Items.STRIPPED_PALE_OAK_LOG);
 		registerJarLidStandalone(event, Items.PUMPKIN);
 		registerJarLidStandalone(event, Items.BAMBOO_BLOCK);
 		registerJarLidStandalone(event, Items.STRIPPED_BAMBOO_BLOCK);
