@@ -1,11 +1,11 @@
 {
 	"parent": "minecraft:block/block",
 	"render_type": "minecraft:cutout",
-	"textures": {
-		"1": "#end",
-		"2": "#side",
-		"particle": "#end"
-	},
+  "textures": {
+    "1": "minecraft:block/red_concrete",
+    "2": "minecraft:block/red_concrete",
+    "particle": "minecraft:block/red_concrete"
+  },
 	"elements": [
 		{
 			"from": [5, 12, 5],

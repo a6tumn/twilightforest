@@ -71,15 +71,10 @@ public final class JarLids {
 
 	private static void register(BootstrapContext<JarLid> context, Item item) {
 		ResourceKey<Item> itemKey = item.builtInRegistryHolder().key();
-		Identifier itemId = itemKey.identifier();
 		context.register(
 			makeKey(item),
 			new JarLid(
-				itemKey,
-				Identifier.fromNamespaceAndPath(
-					itemId.getNamespace(),
-					"block/lid/" + itemId.getPath()
-				)
+				itemKey
 			)
 		);
 	}

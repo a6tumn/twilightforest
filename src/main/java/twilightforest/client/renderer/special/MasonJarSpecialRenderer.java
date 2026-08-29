@@ -5,24 +5,22 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 import tamaized.beanification.Autowired;
-import twilightforest.client.renderer.block.JarRenderer;
+import twilightforest.client.renderer.block.jar.JarLidResolver;
+import twilightforest.client.renderer.block.jar.TexturedJarLidPart;
 import twilightforest.components.item.JarLid;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 import twilightforest.init.TFDataComponents;
@@ -31,58 +29,87 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolver resolver, ModelManager modelManager) implements SpecialModelRenderer<DataComponentMap> {
+public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolver itemModelResolver, BlockModelResolver blockModelResolver) implements SpecialModelRenderer<DataComponentMap> {
 
 	@Autowired(dist = Dist.CLIENT)
 	private static TFItemDisplayContextEnumExtension itemDisplayContextEnumExtension;
 
+	@Autowired(dist = Dist.CLIENT)
+	private static JarLidResolver jarLidResolver;
+
 	@Override
-	public void submit(@Nullable DataComponentMap map, PoseStack stack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
-		if (map == null) {
+	public void submit(@Nullable DataComponentMap components, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, boolean hasFoil, int outlineColor) {
+		if (components == null) {
 			return;
 		}
 
-		stack.pushPose();
+		poseStack.pushPose();
 
-		JarLid jarLid = map.get(TFDataComponents.JAR_LID.get());
-		Item lid = jarLid == null
-			? this.defaultLid().orElse(null)
-			: jarLid.lid();
+		renderLid(components, poseStack, collector, light, overlay, outlineColor);
+		renderContents(components, poseStack, collector, light, overlay, outlineColor);
 
-		if (lid != null) {
-			ResourceKey<Item> lidItemKey =
-				BuiltInRegistries.ITEM.getResourceKey(lid).orElse(null);
+		poseStack.popPose();
+	}
 
-			if (lidItemKey != null) {
-				StandaloneModelKey<BlockStateModelPart> modelKey = JarRenderer.LidModelKeyRegistry.get(lidItemKey);
-				BlockStateModelPart model = this.modelManager().getStandaloneModel(modelKey);
+	private void renderLid(DataComponentMap components, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, int outlineColor) {
+		JarLid jarLid = components.get(TFDataComponents.JAR_LID.get());
+		Item lid = jarLid != null ? jarLid.lid() : defaultLid.orElse(null);
 
-				if (model != null) {
-					collector.submitMultiLayerBlockModel(
-						stack,
-						List.of(model),
-						false,
-						new int[0],
-						light,
-						overlay,
-						outlineColor
-					);
-				}
-			}
+		if (lid == null) {
+			return;
 		}
 
-		ItemContainerContents contents = map.get(DataComponents.CONTAINER);
-		if (contents != null) {
-			stack.pushPose();
-			stack.translate(0.5D, 0.4375D, 0.5D);
-			stack.scale(0.5F, 0.5F, 0.5F);
-			ItemStackRenderState state = new ItemStackRenderState();
-			this.resolver().updateForTopItem(state, contents.copyOne(), itemDisplayContextEnumExtension.JARRED, null, null, 0);
-			state.submit(stack, collector, light, overlay, outlineColor);
-			stack.popPose();
+		TexturedJarLidPart lidPart = jarLidResolver.resolve(blockModelResolver, lid);
+
+		if (lidPart == null) {
+			return;
 		}
 
-		stack.popPose();
+		collector.submitMultiLayerBlockModel(
+			poseStack,
+			List.of(lidPart),
+			false,
+			new int[0],
+			light,
+			overlay,
+			outlineColor
+		);
+	}
+
+	private void renderContents(DataComponentMap components, PoseStack poseStack, SubmitNodeCollector collector, int light, int overlay, int outlineColor) {
+		ItemContainerContents contents = components.get(DataComponents.CONTAINER);
+		if (contents == null) {
+			return;
+		}
+
+		ItemStack item = contents.copyOne();
+		if (item.isEmpty()) {
+			return;
+		}
+
+		poseStack.pushPose();
+		poseStack.translate(0.5D, 0.4375D, 0.5D);
+		poseStack.scale(0.5F, 0.5F, 0.5F);
+
+		ItemStackRenderState renderState = new ItemStackRenderState();
+		itemModelResolver.updateForTopItem(
+			renderState,
+			item,
+			itemDisplayContextEnumExtension.JARRED,
+			null,
+			null,
+			0
+		);
+
+		renderState.submit(
+			poseStack,
+			collector,
+			light,
+			overlay,
+			outlineColor
+		);
+
+		poseStack.popPose();
 	}
 
 	@Override
@@ -95,12 +122,10 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 	}
 
 	public record Unbaked(Optional<Item> defaultLid) implements SpecialModelRenderer.Unbaked<DataComponentMap> {
-		public static final MapCodec<MasonJarSpecialRenderer.Unbaked> MAP_CODEC =
-			RecordCodecBuilder.mapCodec(instance -> instance.group(
-				BuiltInRegistries.ITEM.byNameCodec()
-					.optionalFieldOf("default_lid")
-					.forGetter(MasonJarSpecialRenderer.Unbaked::defaultLid)
-			).apply(instance, MasonJarSpecialRenderer.Unbaked::new));
+		public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(BuiltInRegistries.ITEM.byNameCodec()
+			.optionalFieldOf("default_lid")
+			.forGetter(Unbaked::defaultLid))
+			.apply(instance, Unbaked::new));
 
 		public Unbaked(Item item) {
 			this(Optional.of(item));
@@ -111,7 +136,7 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 		}
 
 		@Override
-		public MapCodec<MasonJarSpecialRenderer.Unbaked> type() {
+		public MapCodec<Unbaked> type() {
 			return MAP_CODEC;
 		}
 
@@ -119,9 +144,9 @@ public record MasonJarSpecialRenderer(Optional<Item> defaultLid, ItemModelResolv
 		public SpecialModelRenderer<DataComponentMap> bake(BakingContext context) {
 			Minecraft minecraft = Minecraft.getInstance();
 			return new MasonJarSpecialRenderer(
-				this.defaultLid(),
+				defaultLid,
 				minecraft.getItemModelResolver(),
-				minecraft.getModelManager()
+				minecraft.getBlockModelResolver()
 			);
 		}
 	}

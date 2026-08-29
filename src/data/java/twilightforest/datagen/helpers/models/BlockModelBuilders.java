@@ -19,10 +19,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.block.CompositeBlockModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CompositeBlockStateModelBuilder;
 import org.jetbrains.annotations.NotNull;
 import twilightforest.TwilightForestMod;
@@ -31,7 +29,6 @@ import twilightforest.client.model.block.aurorablock.NoiseVaryingModelBuilder;
 import twilightforest.client.model.block.connected.ConnectedTextureBuilder;
 import twilightforest.client.model.block.forcefield.ForceFieldModel;
 import twilightforest.client.model.block.forcefield.ForceFieldModelBuilder;
-import twilightforest.client.renderer.block.JarRenderer;
 import twilightforest.client.renderer.special.MasonJarSpecialRenderer;
 import twilightforest.client.renderer.special.SkullCandleSpecialRenderer;
 import twilightforest.client.renderer.special.TrophySpecialRenderer;
@@ -972,47 +969,5 @@ public abstract class BlockModelBuilders extends WoodBlockBuilders {
 			}
 		})));
 		this.itemModelOutput.accept(bush.asItem(), ItemModelUtils.plainModel(small));
-	}
-
-	public void generateJarLidModel(Item item) {
-		Identifier itemId = item.builtInRegistryHolder().key().identifier();
-		Identifier modelId = Identifier.fromNamespaceAndPath(itemId.getNamespace(), "block/lid/" + itemId.getPath());
-		TextureMapping lidMapping;
-		if (item == Items.PUMPKIN) {
-			lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
-				.put(
-					TextureSlot.SIDE,
-					new Material(Identifier.withDefaultNamespace("block/pumpkin_side"))
-				)
-				.put(
-					TextureSlot.END,
-					new Material(Identifier.withDefaultNamespace("block/pumpkin_top"))
-				);
-		} else {
-			lidMapping = TextureMapping.cube(TFBlocks.MASON_JAR.get())
-				.put(
-					TextureSlot.SIDE,
-					new Material(
-						Identifier.fromNamespaceAndPath(
-							itemId.getNamespace(),
-							"block/" + itemId.getPath()
-						)
-					)
-				)
-				.put(
-					TextureSlot.END,
-					new Material(
-						Identifier.fromNamespaceAndPath(
-							itemId.getNamespace(),
-							"block/" + itemId.getPath() + "_top"
-						)
-					)
-				);
-		}
-		TFModelTemplates.JAR_LID.create(
-			modelId,
-			lidMapping,
-			this.modelOutput
-		);
 	}
 }

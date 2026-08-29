@@ -1,4 +1,4 @@
-package twilightforest.client.renderer.block;
+package twilightforest.client.renderer.block.jar;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -16,12 +16,13 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity.WobbleStyle;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -29,17 +30,22 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import org.jspecify.annotations.Nullable;
 import tamaized.beanification.Autowired;
 import tamaized.beanification.Configurable;
+import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.JarBlockEntity;
 import twilightforest.block.entity.MasonJarBlockEntity;
 import twilightforest.client.state.block.JarRenderState;
 import twilightforest.enums.extensions.TFItemDisplayContextEnumExtension;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Configurable
 public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRenderer<T, JarRenderState> {
+	public static final Identifier MODEL = TwilightForestMod.prefix("block/jar_lid");
+	public static final StandaloneModelKey<BlockStateModelPart> MODEL_KEY = new StandaloneModelKey<>(MODEL::toDebugFileName);
 	protected static final float WOBBLE_AMPLITUDE = 0.125F;
+
+	@Autowired(dist = Dist.CLIENT)
+	private JarLidResolver jarLidResolver;
 
 	private final BlockModelResolver blockModelResolver;
 
@@ -55,47 +61,35 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 	@Override
 	public void extractRenderState(T blockEntity, JarRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
 		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
-
-		state.blockStateModel = this.blockModelResolver.modelManager.getBlockStateModelSet().get(blockEntity.getBlockState());
-
+		BlockState blockState = blockEntity.getBlockState();
+		state.blockStateModel = this.blockModelResolver.modelManager.getBlockStateModelSet().get(blockState);
 		state.blockModelRenderState = new BlockModelRenderState();
-		this.blockModelResolver.update(
-			state.blockModelRenderState,
-			blockEntity.getBlockState(),
-			BlockDisplayContext.create()
-		);
-
-		state.lidKey = null;
-		var level = blockEntity.getLevel();
+		this.blockModelResolver.update(state.blockModelRenderState, blockState, BlockDisplayContext.create());
+		state.lidPart = null;
+		Level level = blockEntity.getLevel();
 		if (level != null) {
-			state.lidKey = LidModelKeyRegistry.get(blockEntity.lid.builtInRegistryHolder().key());
+			state.lidPart = jarLidResolver.resolve(blockModelResolver, blockEntity, level);
+			state.gameTime = (float) (level.getGameTime() - blockEntity.wobbleStartedAtTick) + partialTicks;
+		} else {
+			state.gameTime = 0.0F;
 		}
-
 		state.lastWobbleStyle = blockEntity.lastWobbleStyle;
-		state.gameTime = level != null
-			? (float) (level.getGameTime() - blockEntity.wobbleStartedAtTick) + partialTicks
-			: 0.0F;
 	}
 
 	@Override
-	public int getViewDistance() {
-		return 256;
-	}
-
-	@Override
-	public void submit(JarRenderState blockEntity, PoseStack poseStack, SubmitNodeCollector buffer, CameraRenderState camera) {
+	public void submit(JarRenderState state, PoseStack poseStack, SubmitNodeCollector buffer, CameraRenderState camera) {
 		poseStack.pushPose();
-		poseStack.translate(0.5, 0.0, 0.5);
+		poseStack.translate(0.5D, 0.0D, 0.5D);
 		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-		poseStack.translate(-0.5, 0.0, -0.5);
+		poseStack.translate(-0.5D, 0.0D, -0.5D);
 
-		WobbleStyle wobbleStyle = blockEntity.lastWobbleStyle;
+		WobbleStyle wobbleStyle = state.lastWobbleStyle;
 		if (wobbleStyle != null) {
-			float f = blockEntity.gameTime / (float) wobbleStyle.duration;
+			float f = state.gameTime / (float) wobbleStyle.duration;
 			if (f >= 0.0F && f <= 1.0F) {
 				if (wobbleStyle == WobbleStyle.POSITIVE) {
 					float f1 = 0.015625F;
-					float f2 = f * (float) (Math.PI * 2);
+					float f2 = f * (float) (Math.PI * 2.0D);
 					float f3 = -1.5F * (Mth.cos(f2) + 0.5F) * Mth.sin(f2 / 2.0F);
 					poseStack.rotateAround(Axis.XP.rotation(f3 * f1), 0.5F, 0.0F, 0.5F);
 					float f4 = Mth.sin(f2);
@@ -108,56 +102,52 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			}
 		}
 
-		blockEntity.blockModelRenderState.submit(
+		state.blockModelRenderState.submit(
 			poseStack,
 			buffer,
-			blockEntity.lightCoords,
+			state.lightCoords,
 			OverlayTexture.NO_OVERLAY,
 			0
 		);
 
-		if (blockEntity.breakProgress != null) {
+		if (state.breakProgress != null) {
 			buffer.submitBreakingBlockModel(
 				poseStack,
-				blockEntity.blockStateModel,
+				state.blockStateModel,
 				42L,
-				blockEntity.breakProgress.progress()
+				state.breakProgress.progress()
 			);
 		}
 
-		if (blockEntity.lidKey != null) {
-			BlockStateModelPart lid = blockModelResolver.modelManager.getStandaloneModel(blockEntity.lidKey);
-			if (lid != null) {
-				buffer.submitMultiLayerBlockModel(
+		if (state.lidPart != null) {
+			buffer.submitMultiLayerBlockModel(
+				poseStack,
+				List.of(state.lidPart),
+				false,
+				new int[0],
+				state.lightCoords,
+				OverlayTexture.NO_OVERLAY,
+				0
+			);
+			if (state.breakProgress != null) {
+				buffer.submitBreakingBlockModel(
 					poseStack,
-					List.of(lid),
-					false,
-					new int[0],
-					blockEntity.lightCoords,
-					OverlayTexture.NO_OVERLAY,
-					0
+					singlePartModel(state.lidPart),
+					42L,
+					state.breakProgress.progress()
 				);
-
-				if (blockEntity.breakProgress != null) {
-					buffer.submitBreakingBlockModel(
-						poseStack,
-						singlePartModel(lid),
-						42L,
-						blockEntity.breakProgress.progress()
-					);
-				}
 			}
 		}
 
-		if (blockEntity.itemStackRenderState != null) {
+		if (state.itemStackRenderState != null) {
 			poseStack.pushPose();
 			poseStack.translate(0.5D, 0.4375D, 0.5D);
-			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(blockEntity.itemRotation)));
+			poseStack.mulPose(Axis.YN.rotationDegrees(RotationSegment.convertToDegrees(state.itemRotation)));
 			poseStack.scale(0.5F, 0.5F, 0.5F);
-			blockEntity.itemStackRenderState.submit(
+			state.itemStackRenderState.submit(
 				poseStack,
 				buffer,
-				blockEntity.lightCoords,
+				state.lightCoords,
 				OverlayTexture.NO_OVERLAY,
 				0
 			);
@@ -167,10 +157,20 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 		poseStack.popPose();
 	}
 
-	private static BlockStateModel singlePartModel(BlockStateModelPart part) {
+	@Override
+	public int getViewDistance() {
+		return 256;
+	}
+
+	private static BlockStateModel singlePartModel(
+		BlockStateModelPart part
+	) {
 		return new BlockStateModel() {
 			@Override
-			public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
+			public void collectParts(
+				RandomSource random,
+				List<BlockStateModelPart> parts
+			) {
 				parts.add(part);
 			}
 
@@ -207,6 +207,7 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 			state.itemRotation = 0;
 
 			ItemStack stack = blockEntity.getItemHandler().getItem();
+
 			if (!stack.isEmpty()) {
 				state.itemStackRenderState = new ItemStackRenderState();
 				this.itemModelResolver.updateForTopItem(
@@ -219,22 +220,6 @@ public class JarRenderer<T extends JarBlockEntity> implements BlockEntityRendere
 				);
 				state.itemRotation = blockEntity.getItemRotation();
 			}
-		}
-	}
-
-	public static final class LidModelKeyRegistry {
-		private static final Map<ResourceKey<Item>, StandaloneModelKey<BlockStateModelPart>> JAR_LID_KEYS = new HashMap<>();
-
-		public static void register(ResourceKey<Item> item, StandaloneModelKey<BlockStateModelPart> key) {
-			JAR_LID_KEYS.put(item, key);
-		}
-
-		public static StandaloneModelKey<BlockStateModelPart> get(ResourceKey<Item> item) {
-			return JAR_LID_KEYS.get(item);
-		}
-
-		public static void clear() {
-			JAR_LID_KEYS.clear();
 		}
 	}
 }
