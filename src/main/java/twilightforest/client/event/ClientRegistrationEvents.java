@@ -66,6 +66,7 @@ import twilightforest.client.properties.*;
 import twilightforest.client.renderer.armor.TFArmorRenderer;
 import twilightforest.client.renderer.armor.TFSimpleArmorRenderer;
 import twilightforest.client.renderer.block.*;
+import twilightforest.client.renderer.block.jar.JarLidResolver;
 import twilightforest.client.renderer.block.jar.JarRenderer;
 import twilightforest.client.renderer.entity.*;
 import twilightforest.client.renderer.entity.layers.IceLayer;
@@ -211,6 +212,7 @@ public class ClientRegistrationEvents {
 	}
 
 	private void registerClientReloadListeners(AddClientReloadListenersEvent event) {
+		event.addListener(TwilightForestMod.prefix("jar_lid_texture_cache"), new JarLidResolver.TextureCacheInvalidationReloadListener());
 		event.addListener(TwilightForestMod.prefix("texture_generator"), TextureGeneratorReloadListener.INSTANCE);
 		event.addListener(TwilightForestMod.prefix("armor_cache"), new TFArmorRenderer.ResourceReloadListener());
 	}
