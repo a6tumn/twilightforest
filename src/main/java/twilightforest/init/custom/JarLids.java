@@ -1,7 +1,6 @@
 package twilightforest.init.custom;
 
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -55,11 +54,6 @@ public final class JarLids {
 		register(context, TFBlocks.STRIPPED_TIME_LOG.asItem());
 		register(context, TFBlocks.STRIPPED_TRANSFORMATION_LOG.asItem());
 		register(context, TFBlocks.STRIPPED_TWILIGHT_OAK_LOG.asItem());
-	}
-
-	public static Identifier getModelLocation(ResourceKey<Item> itemKey) {
-		Identifier itemId = itemKey.identifier();
-		return Identifier.fromNamespaceAndPath(itemId.getNamespace(), "block/lid/" + itemId.getPath());
 	}
 
 	private static ResourceKey<JarLid> makeKey(Item item) {
