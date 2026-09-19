@@ -12,63 +12,10 @@ import java.util.Random;
 import java.util.function.Function;
 
 public record ColorUtil(Function<DyeColor, Block> function) {
-	public static final ColorUtil WOOL = new ColorUtil(color -> switch (color) {
-		default -> Blocks.WHITE_WOOL;
-		case ORANGE -> Blocks.ORANGE_WOOL;
-		case MAGENTA -> Blocks.MAGENTA_WOOL;
-		case LIGHT_BLUE -> Blocks.LIGHT_BLUE_WOOL;
-		case YELLOW -> Blocks.YELLOW_WOOL;
-		case LIME -> Blocks.LIME_WOOL;
-		case PINK -> Blocks.PINK_WOOL;
-		case GRAY -> Blocks.GRAY_WOOL;
-		case LIGHT_GRAY -> Blocks.LIGHT_GRAY_WOOL;
-		case CYAN -> Blocks.CYAN_WOOL;
-		case PURPLE -> Blocks.PURPLE_WOOL;
-		case BLUE -> Blocks.BLUE_WOOL;
-		case BROWN -> Blocks.BROWN_WOOL;
-		case GREEN -> Blocks.GREEN_WOOL;
-		case RED -> Blocks.RED_WOOL;
-		case BLACK -> Blocks.BLACK_WOOL;
-	});
 
-	public static final ColorUtil TERRACOTTA = new ColorUtil(color -> switch (color) {
-		default -> Blocks.WHITE_TERRACOTTA;
-		case ORANGE -> Blocks.ORANGE_TERRACOTTA;
-		case MAGENTA -> Blocks.MAGENTA_TERRACOTTA;
-		case LIGHT_BLUE -> Blocks.LIGHT_BLUE_TERRACOTTA;
-		case YELLOW -> Blocks.YELLOW_TERRACOTTA;
-		case LIME -> Blocks.LIME_TERRACOTTA;
-		case PINK -> Blocks.PINK_TERRACOTTA;
-		case GRAY -> Blocks.GRAY_TERRACOTTA;
-		case LIGHT_GRAY -> Blocks.LIGHT_GRAY_TERRACOTTA;
-		case CYAN -> Blocks.CYAN_TERRACOTTA;
-		case PURPLE -> Blocks.PURPLE_TERRACOTTA;
-		case BLUE -> Blocks.BLUE_TERRACOTTA;
-		case BROWN -> Blocks.BROWN_TERRACOTTA;
-		case GREEN -> Blocks.GREEN_TERRACOTTA;
-		case RED -> Blocks.RED_TERRACOTTA;
-		case BLACK -> Blocks.BLACK_TERRACOTTA;
-	});
-
-	public static final ColorUtil STAINED_GLASS = new ColorUtil(color -> switch (color) {
-		default -> Blocks.WHITE_STAINED_GLASS;
-		case ORANGE -> Blocks.ORANGE_STAINED_GLASS;
-		case MAGENTA -> Blocks.MAGENTA_STAINED_GLASS;
-		case LIGHT_BLUE -> Blocks.LIGHT_BLUE_STAINED_GLASS;
-		case YELLOW -> Blocks.YELLOW_STAINED_GLASS;
-		case LIME -> Blocks.LIME_STAINED_GLASS;
-		case PINK -> Blocks.PINK_STAINED_GLASS;
-		case GRAY -> Blocks.GRAY_STAINED_GLASS;
-		case LIGHT_GRAY -> Blocks.LIGHT_GRAY_STAINED_GLASS;
-		case CYAN -> Blocks.CYAN_STAINED_GLASS;
-		case PURPLE -> Blocks.PURPLE_STAINED_GLASS;
-		case BLUE -> Blocks.BLUE_STAINED_GLASS;
-		case BROWN -> Blocks.BROWN_STAINED_GLASS;
-		case GREEN -> Blocks.GREEN_STAINED_GLASS;
-		case RED -> Blocks.RED_STAINED_GLASS;
-		case BLACK -> Blocks.BLACK_STAINED_GLASS;
-	});
-
+	public static final ColorUtil WOOL = new ColorUtil(Blocks.WOOL::pick);
+	public static final ColorUtil TERRACOTTA = new ColorUtil(Blocks.DYED_TERRACOTTA::pick);
+	public static final ColorUtil STAINED_GLASS = new ColorUtil(Blocks.STAINED_GLASS::pick);
 
 	public BlockState getColor(DyeColor color) {
 		return this.function.apply(color).defaultBlockState();
@@ -144,14 +91,14 @@ public record ColorUtil(Function<DyeColor, Block> function) {
 	//We COULD use the WOOL method at the very top of this class, but then we have to use the order of the dyecolor enum, which doesnt show the wools in the order the ram displays them.
 	//I personally like this order better so suck it
 	public static final Map<DyeColor, Block> WOOL_TO_DYE_IN_RAM_ORDER = ImmutableMap.ofEntries(
-		entryOf(DyeColor.WHITE, Blocks.WHITE_WOOL), entryOf(DyeColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL),
-		entryOf(DyeColor.GRAY, Blocks.GRAY_WOOL), entryOf(DyeColor.BLACK, Blocks.BLACK_WOOL),
-		entryOf(DyeColor.RED, Blocks.RED_WOOL), entryOf(DyeColor.ORANGE, Blocks.ORANGE_WOOL),
-		entryOf(DyeColor.YELLOW, Blocks.YELLOW_WOOL), entryOf(DyeColor.LIME, Blocks.LIME_WOOL),
-		entryOf(DyeColor.GREEN, Blocks.GREEN_WOOL), entryOf(DyeColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL),
-		entryOf(DyeColor.CYAN, Blocks.CYAN_WOOL), entryOf(DyeColor.BLUE, Blocks.BLUE_WOOL),
-		entryOf(DyeColor.PURPLE, Blocks.PURPLE_WOOL), entryOf(DyeColor.MAGENTA, Blocks.MAGENTA_WOOL),
-		entryOf(DyeColor.PINK, Blocks.PINK_WOOL), entryOf(DyeColor.BROWN, Blocks.BROWN_WOOL));
+		entryOf(DyeColor.WHITE, Blocks.WOOL.white()), entryOf(DyeColor.LIGHT_GRAY, Blocks.WOOL.lightGray()),
+		entryOf(DyeColor.GRAY, Blocks.WOOL.gray()), entryOf(DyeColor.BLACK, Blocks.WOOL.black()),
+		entryOf(DyeColor.RED, Blocks.WOOL.red()), entryOf(DyeColor.ORANGE, Blocks.WOOL.orange()),
+		entryOf(DyeColor.YELLOW, Blocks.WOOL.yellow()), entryOf(DyeColor.LIME, Blocks.WOOL.lime()),
+		entryOf(DyeColor.GREEN, Blocks.WOOL.green()), entryOf(DyeColor.LIGHT_BLUE, Blocks.WOOL.lightBlue()),
+		entryOf(DyeColor.CYAN, Blocks.WOOL.cyan()), entryOf(DyeColor.BLUE, Blocks.WOOL.blue()),
+		entryOf(DyeColor.PURPLE, Blocks.WOOL.purple()), entryOf(DyeColor.MAGENTA, Blocks.WOOL.magenta()),
+		entryOf(DyeColor.PINK, Blocks.WOOL.pink()), entryOf(DyeColor.BROWN, Blocks.WOOL.brown()));
 
 	static <K, V> Map.Entry<K, V> entryOf(K key, V value) {
 		return new AbstractMap.SimpleImmutableEntry<>(key, value);
