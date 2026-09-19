@@ -164,12 +164,14 @@ public class SlideBlock extends Entity {
 	private void damageKnockbackEntities(List<Entity> entities) {
 		for (Entity entity : entities) {
 			if (entity instanceof LivingEntity living) {
-				living.hurt(TFDamageTypes.getDamageSource(this.level(), TFDamageTypes.SLIDER), 5.0F);
+				DamageSource source = TFDamageTypes.getDamageSource(this.level(), TFDamageTypes.SLIDER);
+				float damage = 5.0F;
+				living.hurt(source, damage);
 
 				double kx = (this.getX() - entity.getX()) * 2.0D;
 				double kz = (this.getZ() - entity.getZ()) * 2.0D;
 
-				living.knockback(2.0F, kx, kz);
+				living.knockback(2.0F, kx, kz, source, damage);
 			}
 		}
 	}
