@@ -14,6 +14,7 @@ import net.minecraft.server.level.ParticleStatus;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
@@ -48,7 +49,7 @@ public class CloudEvents {
 
 		if (!mc.isPaused()) {
 			if (mc.level != null && TFConfig.getClientCloudBlockPrecipitationDistance() > 0) { // Semi vanilla copy of the weather tick, but made to work with cloud blocks instead
-				Vec3 vec3 = mc.gameRenderer.getMainCamera().position();
+				Vec3 vec3 = mc.gameRenderer.mainCamera().position();
 				if (mc.level.getGameTime() % 10L == 0L) {
 					RENDER_HELPER.clear();
 
@@ -118,8 +119,8 @@ public class CloudEvents {
 									if (!Heightmap.Types.MOTION_BLOCKING.isOpaque().test(mc.level.getBlockState(highestRainyPos.below())))
 										continue;
 
-									if (yetToMakeASound && particlePos != null && randomsource.nextInt(3) < mc.levelRenderer.weatherEffectRenderer.rainSoundTime++) {
-										mc.levelRenderer.weatherEffectRenderer.rainSoundTime = 0;
+									if (yetToMakeASound && particlePos != null && randomsource.nextInt(3) < mc.level.rainSoundTime++) {
+										mc.level.rainSoundTime = 0;
 										if (particlePos.getY() > camPos.getY() + 1 && mc.level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, camPos).getY() > Mth.floor((float) camPos.getY())) {
 											mc.level.playLocalSound(particlePos, SoundEvents.WEATHER_RAIN_ABOVE, SoundSource.WEATHER, 0.1F, 0.5F, false);
 										} else {
@@ -196,7 +197,7 @@ public class CloudEvents {
 					float distance = (float) (columnDistance / (double) renderDistance);
 					float alpha = ((1.0F - distance * distance) * 0.5F + 0.5F) * helper.precipitationLevel();
 					mutableBlockPos.set(roofX, Math.max(helper.rainOnY(), floorY), roofZ);
-					int lightCoords = LevelRenderer.getLightCoords(minecraft.level, mutableBlockPos);
+					int lightCoords = LightCoordsUtil.getLightCoords(minecraft.level, mutableBlockPos);
 
 					VertexConsumer vC = bufferSource.getBuffer(renderType);
 
@@ -214,7 +215,7 @@ public class CloudEvents {
 					float alpha = ((1.0F - distance * distance) * 0.3F + 0.5F) * helper.precipitationLevel();
 					mutableBlockPos.set(roofX, Math.max(helper.rainOnY(), floorY), roofZ);
 
-					int lightCoords = LevelRenderer.getLightCoords(minecraft.level, mutableBlockPos);
+					int lightCoords = LightCoordsUtil.getLightCoords(minecraft.level, mutableBlockPos);
 					int u = lightCoords & '\uffff';
 					int v = lightCoords >> 16 & '\uffff';
 					u = (u * 3 + 240) / 4;

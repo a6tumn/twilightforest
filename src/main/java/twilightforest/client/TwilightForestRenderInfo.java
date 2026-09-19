@@ -62,6 +62,8 @@ public class TwilightForestRenderInfo implements CustomSkyboxRenderer, CustomWea
 		return skyRenderer.renderSky(levelRenderState, skyRenderState, modelViewMatrix, setupFog);
 	}
 
+
+
 	@Override
 	public boolean renderSnowAndRain(LevelRenderState levelRenderState, WeatherRenderState weatherRenderState, MultiBufferSource bufferSource, Vec3 camPos) {
 		return TFWeatherRenderer.renderSnowAndRain(Minecraft.getInstance().level, Minecraft.getInstance().levelRenderer.getTicks(), Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false), camPos, bufferSource);
