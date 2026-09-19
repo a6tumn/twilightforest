@@ -11,11 +11,64 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
 
+// TODO: Evaluate if some of the utilities here can be replaced by helpers on net/minecraft/world/level/block/ColorCollection
 public record ColorUtil(Function<DyeColor, Block> function) {
+	public static final ColorUtil WOOL = new ColorUtil(color -> switch (color) {
+		default -> Blocks.WOOL.white();
+		case ORANGE -> Blocks.WOOL.orange();
+		case MAGENTA -> Blocks.WOOL.magenta();
+		case LIGHT_BLUE -> Blocks.WOOL.lightBlue();
+		case YELLOW -> Blocks.WOOL.yellow();
+		case LIME -> Blocks.WOOL.lime();
+		case PINK -> Blocks.WOOL.pink();
+		case GRAY -> Blocks.WOOL.gray();
+		case LIGHT_GRAY -> Blocks.WOOL.lightGray();
+		case CYAN -> Blocks.WOOL.cyan();
+		case PURPLE -> Blocks.WOOL.purple();
+		case BLUE -> Blocks.WOOL.blue();
+		case BROWN -> Blocks.WOOL.brown();
+		case GREEN -> Blocks.WOOL.green();
+		case RED -> Blocks.WOOL.red();
+		case BLACK -> Blocks.WOOL.black();
+	});
 
-	public static final ColorUtil WOOL = new ColorUtil(Blocks.WOOL::pick);
-	public static final ColorUtil TERRACOTTA = new ColorUtil(Blocks.DYED_TERRACOTTA::pick);
-	public static final ColorUtil STAINED_GLASS = new ColorUtil(Blocks.STAINED_GLASS::pick);
+	public static final ColorUtil TERRACOTTA = new ColorUtil(color -> switch (color) {
+		default -> Blocks.DYED_TERRACOTTA.white();
+		case ORANGE -> Blocks.DYED_TERRACOTTA.orange();
+		case MAGENTA -> Blocks.DYED_TERRACOTTA.magenta();
+		case LIGHT_BLUE -> Blocks.DYED_TERRACOTTA.lightBlue();
+		case YELLOW -> Blocks.DYED_TERRACOTTA.yellow();
+		case LIME -> Blocks.DYED_TERRACOTTA.lime();
+		case PINK -> Blocks.DYED_TERRACOTTA.pink();
+		case GRAY -> Blocks.DYED_TERRACOTTA.gray();
+		case LIGHT_GRAY -> Blocks.DYED_TERRACOTTA.lightGray();
+		case CYAN -> Blocks.DYED_TERRACOTTA.cyan();
+		case PURPLE -> Blocks.DYED_TERRACOTTA.purple();
+		case BLUE -> Blocks.DYED_TERRACOTTA.blue();
+		case BROWN -> Blocks.DYED_TERRACOTTA.brown();
+		case GREEN -> Blocks.DYED_TERRACOTTA.green();
+		case RED -> Blocks.DYED_TERRACOTTA.red();
+		case BLACK -> Blocks.DYED_TERRACOTTA.black();
+	});
+
+	public static final ColorUtil STAINED_GLASS = new ColorUtil(color -> switch (color) {
+		default -> Blocks.STAINED_GLASS.white();
+		case ORANGE -> Blocks.STAINED_GLASS.orange();
+		case MAGENTA -> Blocks.STAINED_GLASS.magenta();
+		case LIGHT_BLUE -> Blocks.STAINED_GLASS.lightBlue();
+		case YELLOW -> Blocks.STAINED_GLASS.yellow();
+		case LIME -> Blocks.STAINED_GLASS.lime();
+		case PINK -> Blocks.STAINED_GLASS.pink();
+		case GRAY -> Blocks.STAINED_GLASS.gray();
+		case LIGHT_GRAY -> Blocks.STAINED_GLASS.lightGray();
+		case CYAN -> Blocks.STAINED_GLASS.cyan();
+		case PURPLE -> Blocks.STAINED_GLASS.purple();
+		case BLUE -> Blocks.STAINED_GLASS.blue();
+		case BROWN -> Blocks.STAINED_GLASS.brown();
+		case GREEN -> Blocks.STAINED_GLASS.green();
+		case RED -> Blocks.STAINED_GLASS.red();
+		case BLACK -> Blocks.STAINED_GLASS.black();
+	});
 
 	public BlockState getColor(DyeColor color) {
 		return this.function.apply(color).defaultBlockState();
