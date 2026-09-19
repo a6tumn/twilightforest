@@ -2,10 +2,10 @@ package twilightforest.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,7 +32,7 @@ public class StructureClearedTrigger extends SimpleCriterionTrigger<StructureCle
 				ResourceKey.codec(Registries.STRUCTURE).fieldOf("structure").forGetter(StructureClearedTrigger.TriggerInstance::structure))
 			.apply(instance, StructureClearedTrigger.TriggerInstance::new));
 
-		public static Criterion<StructureClearedTrigger.TriggerInstance> clearedStructure(ResourceKey<Structure> structure) {
+		public static Criterion<TriggerInstance> clearedStructure(ResourceKey<Structure> structure) {
 			return TFAdvancements.STRUCTURE_CLEARED.get().createCriterion(new StructureClearedTrigger.TriggerInstance(Optional.empty(), structure));
 		}
 
