@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.ProtoChunk;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFStructureProcessors;
@@ -15,7 +14,7 @@ import twilightforest.init.TFStructureProcessors;
 import java.util.Arrays;
 import java.util.List;
 
-public class UpdateMarkingProcessor extends StructureProcessor {
+public class UpdateMarkingProcessor implements StructureProcessor {
 	public static final MapCodec<UpdateMarkingProcessor> CODEC = Block.CODEC.codec().listOf().xmap(UpdateMarkingProcessor::new, p -> p.blocksToMarkUpdate).fieldOf("mark_updates");
 
 	private final List<Block> blocksToMarkUpdate;
@@ -41,7 +40,7 @@ public class UpdateMarkingProcessor extends StructureProcessor {
 	}
 
 	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.UPDATE_MARKING_PROCESSOR.value();
+	public MapCodec<? extends StructureProcessor> codec() {
+		return TFStructureProcessors.UPDATE_MARKING_PROCESSOR.get();
 	}
 }
