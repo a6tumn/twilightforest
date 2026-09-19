@@ -2,11 +2,11 @@ package twilightforest.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public class DrinkFromFlaskTrigger extends SimpleCriterionTrigger<DrinkFromFlask
 				return TFAdvancements.DRINK_FROM_FLASK.get().createCriterion(new TriggerInstance(Optional.empty(), MinMaxBounds.Ints.exactly(doses), seconds, potion));
 			}
 
-			public Criterion<DrinkFromFlaskTrigger.TriggerInstance> drankPotion(MinMaxBounds.Ints doses, MinMaxBounds.Ints seconds, Holder<Potion> potion) {
+			public Criterion<TriggerInstance> drankPotion(MinMaxBounds.Ints doses, MinMaxBounds.Ints seconds, Holder<Potion> potion) {
 				return TFAdvancements.DRINK_FROM_FLASK.get().createCriterion(new TriggerInstance(Optional.empty(), doses, seconds, potion));
 			}
 		}
