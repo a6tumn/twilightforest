@@ -469,7 +469,7 @@ public class TFWeatherRenderer {
 				int y1 = Math.max(cameraBlockY + renderState.radius, terrainHeight);
 				if (y1 - y0 != 0 && getPrecipitationAt(level, mutablePos.set(x, cameraBlockY, z)) == Biome.Precipitation.RAIN) {
 					columnRandom.setSeed(x * x * 3121L + x * 45238971L ^ z * z * 418711L + z * 13761L);
-					int lightCoords = LevelRenderer.getLightCoords(level, mutablePos.set(x, Math.max(cameraBlockY, terrainHeight), z));
+					int lightCoords = LightCoordsUtil.getLightCoords(level, mutablePos.set(x, Math.max(cameraBlockY, terrainHeight), z));
 					int wrappedTicks = ticks & 131071;
 					int tickOffset = x * x * 3121 + x * 45238971 + z * z * 418711 + z * 13761 & 0xFF;
 					float blockPosRainSpeed = 3.0F + columnRandom.nextFloat();

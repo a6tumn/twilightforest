@@ -34,7 +34,7 @@ import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.KeepsakeCasketBlock;
 import twilightforest.block.entity.SkullChestBlockEntity;
-//import twilightforest.compat.curios.CuriosCompat;
+import twilightforest.compat.curios.CuriosCompat;
 import twilightforest.components.entity.CharmAttachment;
 import twilightforest.config.TFConfig;
 import twilightforest.init.*;
@@ -359,7 +359,7 @@ public class CharmEvents {
 
 	private static boolean hasCharmCurio(Item item, Player player, boolean saveItemToTag) {
 		if (ModList.get().isLoaded("curios")) {
-			//return CuriosCompat.findAndConsumeCurio(item, player, saveItemToTag);
+			return CuriosCompat.findAndConsumeCurio(item, player, saveItemToTag);
 		}
 
 		return false;

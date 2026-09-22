@@ -32,7 +32,7 @@ public class UpdateMarkingProcessor implements StructureProcessor {
 	public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos piecePos, StructureTemplate.StructureBlockInfo originalInfo, StructureTemplate.StructureBlockInfo modifiedInfo, StructurePlaceSettings placeSettings, @Nullable StructureTemplate template) {
 		if (this.blocksToMarkUpdate.contains(modifiedInfo.state().getBlock())) {
 			if (level.getChunk(modifiedInfo.pos()) instanceof ProtoChunk protoChunk) {
-				protoChunk.markPosForPostprocessing(modifiedInfo.pos());
+				protoChunk.markPosForPostProcessing(modifiedInfo.pos());
 			}
 		}
 
