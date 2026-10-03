@@ -51,7 +51,7 @@ public class DataGenerator {
 		generator.addProvider(true, new DataMapGenerator(output, lookupProvider));
 		generator.addProvider(true, new LootGenerator(output, lookupProvider));
 		generator.addProvider(true, new LootModifierGenerator(output, lookupProvider));
-		generator.addProvider(true, new QuestGenerator(output));
+		generator.addProvider(true, new QuestGenerator(output, lookupProvider));
 		generator.addProvider(true, new RecipePriorityGenerator(output, lookupProvider));
 		generator.addProvider(true, new StalactiteGenerator(output));
 		generator.addProvider(true, new CampStructureDefinitionGenerator(output, lookupProvider));
