@@ -19,7 +19,8 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import org.jspecify.annotations.Nullable;
 import twilightforest.components.item.ItemDisplayContents;
 import twilightforest.init.TFDataComponents;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.Optional;
 
@@ -93,7 +94,7 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 		//only tick while on the player's head
 		if (slot != EquipmentSlot.HEAD)
 			return;
-		if (level.isClientSide() || !TravellersModifiersManager.isModifierActive(owner, TravellersModifiersManager.ITEM_DISPLAY_MODIFIER))
+		if (level.isClientSide() || !TravellersModifierUtil.isModifierActive(owner, TravellersModifiers.ITEM_DISPLAY_MODIFIER))
 			return;
 
 		ItemDisplayContents contents = stack.get(TFDataComponents.ITEM_DISPLAY);
@@ -131,7 +132,7 @@ public class TravellersGogglesItem extends TravellersArmorItem {
 
 	@Override
 	public boolean isGazeDisguise(ItemStack stack, Player player, @Nullable LivingEntity entity) {
-		return entity instanceof EnderMan && TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ALL_NIGHT_GOGGLES_MODIFIER);
+		return entity instanceof EnderMan && TravellersModifierUtil.isModifierActive(player, TravellersModifiers.ALL_NIGHT_GOGGLES_MODIFIER);
 	}
 
 	private void playRemoveOneSound(Entity entity) {

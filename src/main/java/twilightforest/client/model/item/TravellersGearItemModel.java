@@ -26,8 +26,8 @@ import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFDataComponents;
-import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class TravellersGearItemModel implements ItemModel {
 		this.baseModel.update(state, stack, resolver, context, level, owner, seed);
 
 		if (stack.has(TFDataComponents.IS_TRAVELLERS_GEAR) && level != null) {
-			List<Holder.Reference<TravellersModifier>> modifiers = TravellersModifiersManager.findAllInsertableModifiers(level, stack);
+			List<Holder.Reference<TravellersModifier>> modifiers = TravellersModifierUtil.findAllInsertableModifiers(level, stack);
 			if (!modifiers.isEmpty()) {
 				String key = BuiltInRegistries.ITEM.getKey(stack.getItem()).getPath() + this.getModifiersSuffix(modifiers);
 				this.possibleCombos.computeIfAbsent(key, _ -> this.getModifiedGear(modifiers)).update(state, stack, resolver, context, level, owner, seed);

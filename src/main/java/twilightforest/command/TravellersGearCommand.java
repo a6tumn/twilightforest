@@ -14,10 +14,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import twilightforest.TFRegistries;
-import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.InsertableTravellersModifier;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.function.Function;
 
@@ -45,18 +45,18 @@ public class TravellersGearCommand {
 
 	private int addModifier(CommandSourceStack source, Holder.Reference<TravellersModifier> modifier) throws CommandSyntaxException {
 		Context ctx = validate(source, modifier);
-		if (TravellersModifiersManager.countInsertableModifiers(source.registryAccess(), ctx.stack()) >= ctx.item().getModifierSlots()) throw ERROR_TOO_MANY_MODIFIERS.create();
-		if (TravellersModifiersManager.hasTravellersModifier(ctx.stack(), modifier)) throw ERROR_HAS_MODIFIER.apply(ctx.modKey()).create();
+		if (TravellersModifierUtil.countInsertableModifiers(source.registryAccess(), ctx.stack()) >= ctx.item().getModifierSlots()) throw ERROR_TOO_MANY_MODIFIERS.create();
+		if (TravellersModifierUtil.hasTravellersModifier(ctx.stack(), modifier)) throw ERROR_HAS_MODIFIER.apply(ctx.modKey()).create();
 		if (!modifier.value().group().test(ctx.player().getEquipmentSlotForItem(ctx.stack()))) throw ERROR_WRONG_SLOT.apply(ctx.modKey()).create();
 
-		TravellersModifiersManager.addModifier(ctx.stack(), modifier);
+		TravellersModifierUtil.addModifier(ctx.stack(), modifier);
 		source.sendSuccess(() -> Component.translatable("commands.tffeature.added_modifier", ctx.modKey(), ctx.stack().getHoverName()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	private int removeModifier(CommandSourceStack source, Holder.Reference<TravellersModifier> modifier) throws CommandSyntaxException {
 		Context ctx = validate(source, modifier);
-		if (!TravellersModifiersManager.hasTravellersModifier(ctx.stack(), modifier)) throw ERROR_NO_MODIFIER.apply(ctx.modKey()).create();
+		if (!TravellersModifierUtil.hasTravellersModifier(ctx.stack(), modifier)) throw ERROR_NO_MODIFIER.apply(ctx.modKey()).create();
 
 		((InsertableTravellersModifier) modifier.value()).removeModifier(ctx.stack());
 		source.sendSuccess(() -> Component.translatable("commands.tffeature.removed_modifier", ctx.modKey(), ctx.stack().getHoverName()), true);
@@ -67,7 +67,7 @@ public class TravellersGearCommand {
 		if (!(source.getEntity() instanceof Player player) || player instanceof FakePlayer) throw ERROR_NOT_RUN_BY_PLAYER.create();
 		if (!(player.getMainHandItem().getItem() instanceof TravellersModifiable armor)) throw ERROR_NOT_HOLDING_GEAR.create();
 		if (modifier.value().isAbility()) throw ERROR_ABILITY.create();
-		Component modKey = TravellersModifiersManager.getModifierTooltipComponent(modifier);
+		Component modKey = TravellersModifierUtil.getModifierTooltipComponent(modifier);
 		return new Context(player, player.getMainHandItem(), armor, modKey);
 	}
 

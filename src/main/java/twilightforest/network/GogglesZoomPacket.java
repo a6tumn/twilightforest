@@ -9,7 +9,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFDataAttachments;
 import twilightforest.init.TFSounds;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.UUID;
 
@@ -36,7 +37,7 @@ public record GogglesZoomPacket(boolean isUsingZoom, UUID playerUUID) implements
 				return;
 			}
 
-			boolean canChangeZoomState = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ZOOM_ABILITY);
+			boolean canChangeZoomState = TravellersModifierUtil.isModifierActive(player, TravellersModifiers.ZOOM_ABILITY);
 			if (canChangeZoomState) {
 				player.setData(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER, packet.isUsingZoom);
 				player.playSound(packet.isUsingZoom ? TFSounds.GOGGLES_ZOOM_IN.get() : TFSounds.GOGGLES_ZOOM_OUT.get());

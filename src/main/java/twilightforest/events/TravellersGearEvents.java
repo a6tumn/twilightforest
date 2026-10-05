@@ -47,7 +47,7 @@ import tamaized.beanification.Component;
 import tamaized.beanification.PostConstruct;
 import twilightforest.components.entity.SlimySolesAttachment;
 import twilightforest.init.*;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.inventory.InventoryUtil;
 import twilightforest.item.travellers_gear.TravellersArmorItem;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
@@ -55,6 +55,7 @@ import twilightforest.item.travellers_gear.modifiers.InsertableTravellersModifie
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import twilightforest.network.GradualGlidePacket;
 import twilightforest.network.ParticlePacket;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.*;
 import java.util.function.Function;
@@ -94,7 +95,7 @@ public class TravellersGearEvents {
 		if (!(entity instanceof LivingEntity livingEntity) || !event.getRayTraceResult().getType().equals(HitResult.Type.BLOCK) || projectile.tickCount >= 200)
 			return;
 
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, TravellersModifiersManager.ARROW_MAGNETISM_MODIFIER)
+		if (!TravellersModifierUtil.isModifierActive(livingEntity, TravellersModifiers.ARROW_MAGNETISM_MODIFIER)
 			|| !(projectile instanceof AbstractArrow arrow) || projectile.level().isClientSide())
 			return;
 
@@ -121,7 +122,7 @@ public class TravellersGearEvents {
 		ItemStack chest = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
 		Float probability = chest.get(TFDataComponents.PERFECT_DODGE_PROBABILITY);
 		Level level = livingEntity.level();
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, chest, TravellersModifiersManager.PERFECT_DODGE_MODIFIER) || probability == null)
+		if (!TravellersModifierUtil.isModifierActive(livingEntity, chest, TravellersModifiers.PERFECT_DODGE_MODIFIER) || probability == null)
 			return;
 		if (level.isClientSide()) {
 			event.setCanceled(true); // always cancel on the client side because the game sends a damage packet when it hits the player
@@ -150,7 +151,7 @@ public class TravellersGearEvents {
 		ItemStack boots = livingEntity.getItemBySlot(EquipmentSlot.FEET);
 		Float coefficient = boots.get(TFDataComponents.SLIMY_SOLES_COEFFICIENT);
 		SlimySolesAttachment slimySolesAttachment = livingEntity.getData(TFDataAttachments.SLIMY_SOLES_BOUNCE_INFO);
-		if (!livingEntity.isShiftKeyDown() && TravellersModifiersManager.isModifierActive(livingEntity, boots, TravellersModifiersManager.SLIMY_SOLES_MODIFIER) && coefficient != null && (calculateFallDamage(event) > 0 || slimySolesAttachment.forceBounce)) {
+		if (!livingEntity.isShiftKeyDown() && TravellersModifierUtil.isModifierActive(livingEntity, boots, TravellersModifiers.SLIMY_SOLES_MODIFIER) && coefficient != null && (calculateFallDamage(event) > 0 || slimySolesAttachment.forceBounce)) {
 			event.setCanceled(true);
 			slimySolesAttachment.bounceVelocity = -livingEntity.getDeltaMovement().y() * Math.sqrt(coefficient);
 			slimySolesAttachment.doubleJumpBoostVelocity = slimySolesAttachment.bounceVelocity;
@@ -178,7 +179,7 @@ public class TravellersGearEvents {
 	private void tickMovementModifiers(PlayerTickEvent.Pre event) {
 		Player player = event.getEntity();
 		Boolean hasDoubleJump = null;
-		if (!TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(player, TravellersModifiers.DOUBLE_JUMP_MODIFIER))
 			hasDoubleJump = false;
 		else if (player.onGround() || player.isInLiquid() || player.onClimbable())
 			hasDoubleJump = true;
@@ -192,7 +193,7 @@ public class TravellersGearEvents {
 		}
 
 		if (!player.level().isClientSide()) {
-			boolean modifierActive = TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.GRADUAL_GLIDE_MODIFIER);
+			boolean modifierActive = TravellersModifierUtil.isModifierActive(player, TravellersModifiers.GRADUAL_GLIDE_MODIFIER);
 			if (!modifierActive && player.getData(TFDataAttachments.IS_GRADUALLY_GLIDING)) {
 				player.setData(TFDataAttachments.IS_GRADUALLY_GLIDING, false);
 				PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new GradualGlidePacket(false, player.getUUID()));
@@ -217,7 +218,7 @@ public class TravellersGearEvents {
 
 	private void disableHighStepWhileSneaking(PlayerTickEvent.Pre event) {
 		Player player = event.getEntity();
-		if (!TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.STEP_UP_ABILITY))
+		if (!TravellersModifierUtil.isModifierActive(player, TravellersModifiers.STEP_UP_ABILITY))
 			return;
 		AttributeInstance attribute = player.getAttributes().getInstance(Attributes.STEP_HEIGHT);
 		if (attribute == null)
@@ -315,7 +316,7 @@ public class TravellersGearEvents {
 			return;
 		}
 		ItemStack inputStack = travellersItemStacks.getFirst();
-		List<Holder.Reference<TravellersModifier>> modifiers = TravellersModifiersManager.findAllInsertableModifiers(access, inputStack);
+		List<Holder.Reference<TravellersModifier>> modifiers = TravellersModifierUtil.findAllInsertableModifiers(access, inputStack);
 		if (modifiers.isEmpty()) {
 			event.setCanceled(true);
 			return;
@@ -328,13 +329,13 @@ public class TravellersGearEvents {
 
 	private void extractItemsFromSwapHotbarModifier(GrindstoneEvent.OnTakeItem event) {
 		returnModifierItems(event,
-			TravellersModifiersManager.SWAP_HOTBAR_MODIFIER,
+			TravellersModifiers.SWAP_HOTBAR_MODIFIER,
 			DataComponents.CONTAINER,
 			ItemContainerContents::nonEmptyItemCopyStream
 		);
 
 		returnModifierItems(event,
-			TravellersModifiersManager.ITEM_DISPLAY_MODIFIER,
+			TravellersModifiers.ITEM_DISPLAY_MODIFIER,
 			TFDataComponents.ITEM_DISPLAY.get(),
 			contents -> contents.items().stream()
 		);
@@ -342,7 +343,7 @@ public class TravellersGearEvents {
 
 	private <T> void returnModifierItems(GrindstoneEvent.OnTakeItem event, ResourceKey<TravellersModifier> modifierKey, DataComponentType<T> componentType, Function<T, Stream<ItemStack>> itemStreamExtractor) {
 		getUniqueTravellersGear(event.getTopItem(), event.getBottomItem(), stack ->
-			TravellersModifiersManager.hasTravellersModifier(event.getPlayer().registryAccess(), stack, modifierKey)
+			TravellersModifierUtil.hasTravellersModifier(event.getPlayer().registryAccess(), stack, modifierKey)
 		).map(stack -> stack.get(componentType))
 			.ifPresent(component ->
 				itemStreamExtractor.apply(component)
@@ -359,7 +360,7 @@ public class TravellersGearEvents {
 	}
 
 	private void cancelPhantomSpawns(PlayerSpawnPhantomsEvent event) {
-		if (TravellersModifiersManager.isModifierActive(event.getEntity(), TravellersModifiersManager.ALL_NIGHT_GOGGLES_MODIFIER)) {
+		if (TravellersModifierUtil.isModifierActive(event.getEntity(), TravellersModifiers.ALL_NIGHT_GOGGLES_MODIFIER)) {
 			event.setResult(PlayerSpawnPhantomsEvent.Result.DENY);
 		}
 	}
@@ -372,8 +373,8 @@ public class TravellersGearEvents {
 			}
 
 			if (!compareStack.isEmpty()) {
-				var oldMods = TravellersModifiersManager.findAllInsertableModifiers(player, compareStack);
-				TravellersModifiersManager.findAllInsertableModifiers(player, event.getCrafting()).stream()
+				var oldMods = TravellersModifierUtil.findAllInsertableModifiers(player, compareStack);
+				TravellersModifierUtil.findAllInsertableModifiers(player, event.getCrafting()).stream()
 					.filter(modifier -> !oldMods.contains(modifier)).toList()
 						.forEach(modifier -> TFAdvancements.ADD_MODIFIER.get().trigger(player, modifier.key().identifier()));
 			}

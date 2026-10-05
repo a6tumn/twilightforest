@@ -13,8 +13,9 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.TooltipDisplay;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFSounds;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.tags.TFItemTags;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.Optional;
 
@@ -78,12 +79,12 @@ public class TravellersArmorBeltItem extends TravellersArmorItem {
 	}
 
 	public static boolean isSwapHotbarActive(Player player, ItemStack stack) {
-		return (TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.SWAP_HOTBAR_MODIFIER) || TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.SWAP_HOTBAR_ABILITY))
+		return (TravellersModifierUtil.isModifierActive(player, TravellersModifiers.SWAP_HOTBAR_MODIFIER) || TravellersModifierUtil.isModifierActive(player, TravellersModifiers.SWAP_HOTBAR_ABILITY))
 			&& stack.has(DataComponents.CONTAINER);
 	}
 
 	public static boolean hasSwapHotbar(Player player, ItemStack stack) {
-		return (TravellersModifiersManager.hasTravellersModifier(player.registryAccess(), stack, TravellersModifiersManager.SWAP_HOTBAR_MODIFIER) || TravellersModifiersManager.hasTravellersModifier(player.registryAccess(), stack, TravellersModifiersManager.SWAP_HOTBAR_ABILITY))
+		return (TravellersModifierUtil.hasTravellersModifier(player.registryAccess(), stack, TravellersModifiers.SWAP_HOTBAR_MODIFIER) || TravellersModifierUtil.hasTravellersModifier(player.registryAccess(), stack, TravellersModifiers.SWAP_HOTBAR_ABILITY))
 			&& stack.has(DataComponents.CONTAINER);
 	}
 

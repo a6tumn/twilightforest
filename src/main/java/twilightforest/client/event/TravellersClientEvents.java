@@ -39,12 +39,13 @@ import tamaized.beanification.PostConstruct;
 import twilightforest.TwilightForestMod;
 import twilightforest.config.TFConfig;
 import twilightforest.init.*;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.item.travellers_gear.TravellersArmorBeltItem;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
 import twilightforest.network.*;
 import twilightforest.tags.TFItemTags;
+import twilightforest.util.TravellersModifierUtil;
 
 @Component(dist = Dist.CLIENT)
 public class TravellersClientEvents {
@@ -75,7 +76,7 @@ public class TravellersClientEvents {
 		if (!(event.getEntity() instanceof LocalPlayer localPlayer))
 			return;
 		ItemStack leggingsStack = localPlayer.getItemBySlot(EquipmentSlot.LEGS);
-		if (!TravellersModifiersManager.isModifierActive(localPlayer, leggingsStack, TravellersModifiersManager.AGILE_RANGER_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(localPlayer, leggingsStack, TravellersModifiers.AGILE_RANGER_MODIFIER))
 			return;
 		ItemStack stack = localPlayer.getUseItem();
 		boolean isLegalItem = (stack.getItem() instanceof ProjectileWeaponItem || stack.is(TFItemTags.TRAVELLERS_AGILE_RANGER_WHITELISTED)) && !stack.is(TFItemTags.TRAVELLERS_AGILE_RANGER_BLACKLISTED);
@@ -98,7 +99,7 @@ public class TravellersClientEvents {
 			return;
 
 		ClientInput input = localPlayer.input;
-		if (!TravellersModifiersManager.isModifierActive(localPlayer, bootsStack, TravellersModifiersManager.STRAIGHT_AHEAD_MODIFIER) || multiplier == null || input.getMoveVector().y <= 0)
+		if (!TravellersModifierUtil.isModifierActive(localPlayer, bootsStack, TravellersModifiers.STRAIGHT_AHEAD_MODIFIER) || multiplier == null || input.getMoveVector().y <= 0)
 			multiplier = 1D;
 		attributeInstance.addOrUpdateTransientModifier(new AttributeModifier(TFAttributeModifiers.STRAIGHT_AHEAD_ATTRIBUTE_MODIFIER_LOCATION, multiplier - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 		input.moveVector = new Vec2((float) (input.getMoveVector().x / multiplier), input.getMoveVector().y);
@@ -170,7 +171,7 @@ public class TravellersClientEvents {
 		if (pressedKey)
 			localPlayer.setData(TFDataAttachments.LAST_JUMP_KEY_PRESS_TIME, localPlayer.tickCount);
 		boolean avoidCreativeFly = localPlayer.mayFly() && localPlayer.tickCount - lastJumpKeyPressTime <= 6;
-		if (pressedKey && !avoidCreativeFly && TravellersModifiersManager.isModifierActive(localPlayer, TravellersModifiersManager.DOUBLE_JUMP_MODIFIER)) {
+		if (pressedKey && !avoidCreativeFly && TravellersModifierUtil.isModifierActive(localPlayer, TravellersModifiers.DOUBLE_JUMP_MODIFIER)) {
 			if (TravellersGearLogic.performDoubleJump(localPlayer)) {
 				localPlayer.connection.send(new PerformDoubleJumpPacket());
 			}
@@ -183,7 +184,7 @@ public class TravellersClientEvents {
 		boolean wasUsingZoom = player.getData(TFDataAttachments.IS_USING_GOGGLES_ZOOM_MODIFIER);
 		ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
 		Float zoomModifier = headStack.get(TFDataComponents.ZOOM_ABILITY_MODIFIER);
-		boolean isUsingZoom = isZoomKeyHeld(player) && TravellersModifiersManager.isModifierActive(player, headStack, TravellersModifiersManager.ZOOM_ABILITY) && zoomModifier != null;
+		boolean isUsingZoom = isZoomKeyHeld(player) && TravellersModifierUtil.isModifierActive(player, headStack, TravellersModifiers.ZOOM_ABILITY) && zoomModifier != null;
 		if (isUsingZoom)
 			event.setNewFovModifier(event.getNewFovModifier() * zoomModifier);
 		if (isUsingZoom == wasUsingZoom)
@@ -228,7 +229,7 @@ public class TravellersClientEvents {
 	}
 
 	private void toggleRedThreadVision(InputEvent.Key event) {
-		this.toggleBooleanDataAttachment(TFKeyBinds.RED_THREAD_VISION_KEY.consumeClick(), TravellersModifiersManager.RED_THREAD_VISION_MODIFIER, TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION);
+		this.toggleBooleanDataAttachment(TFKeyBinds.RED_THREAD_VISION_KEY.consumeClick(), TravellersModifiers.RED_THREAD_VISION_MODIFIER, TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION);
 	}
 
 	private void toggleBooleanDataAttachment(boolean pressed, ResourceKey<TravellersModifier> modifier, DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> attachment) {
@@ -236,7 +237,7 @@ public class TravellersClientEvents {
 			return;
 
 		Player player = Minecraft.getInstance().player;
-		if (player == null || !TravellersModifiersManager.isModifierActive(player, modifier))
+		if (player == null || !TravellersModifierUtil.isModifierActive(player, modifier))
 			return;
 
 		boolean current = player.getData(attachment.get());

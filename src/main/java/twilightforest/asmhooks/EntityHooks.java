@@ -11,8 +11,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.InFluidPredicate;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.item.travellers_gear.TravellersGearLogic;
+import twilightforest.util.TravellersModifierUtil;
 
 public class EntityHooks {
 
@@ -26,7 +27,7 @@ public class EntityHooks {
 		if (!fluidState.is(FluidTags.WATER))
 			return o;
 
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, TravellersModifiersManager.WATER_WALK_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(livingEntity, TravellersModifiers.WATER_WALK_MODIFIER))
 			return o;
 
 		boolean isWaterWalking = TravellersGearLogic.isWaterWalking(livingEntity);
@@ -42,7 +43,7 @@ public class EntityHooks {
 	 * {@link net.minecraft.world.entity.LivingEntity#getLiquidCollisionShape()}
 	 */
 	public static VoxelShape processLiquidCollisionShape(VoxelShape o, LivingEntity livingEntity) {
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, TravellersModifiersManager.WATER_WALK_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(livingEntity, TravellersModifiers.WATER_WALK_MODIFIER))
 			return o;
 
 		return TravellersGearLogic.isWaterWalking(livingEntity) ? TravellersGearLogic.WATER_WALKING_COLLISION_SHAPE : o;
@@ -56,7 +57,7 @@ public class EntityHooks {
 	 * Targets: {@link Entity#isInWater()}
 	 */
 	public static boolean unrestrainedSprintingInWater(boolean isInWater, LivingEntity livingEntity) {
-		if (!TravellersModifiersManager.isModifierActive(livingEntity, TravellersModifiersManager.UNRESTRAINED_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(livingEntity, TravellersModifiers.UNRESTRAINED_MODIFIER))
 			return isInWater;
 		return !livingEntity.canStandOnFluid(livingEntity.level().getFluidState(livingEntity.blockPosition())) && isInWater;
 	}
@@ -97,7 +98,7 @@ public class EntityHooks {
 	 * Targets: FRETURN
 	 */
 	public static float resetFactorWithUnrestrained(float o, Entity entity) {
-		return TravellersModifiersManager.isModifierActive(entity, TravellersModifiersManager.UNRESTRAINED_MODIFIER) ? 1.0F : o;
+		return TravellersModifierUtil.isModifierActive(entity, TravellersModifiers.UNRESTRAINED_MODIFIER) ? 1.0F : o;
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class EntityHooks {
 	 * {@link net.minecraft.world.entity.Entity#move(MoverType, Vec3)}<br/>
 	 */
 	public static Entity resetStuckUnrestrained(Entity entity) {
-		if (!(entity instanceof LivingEntity living) || living.stuckSpeedMultiplier.lengthSqr() <= 1.0E-7 || !TravellersModifiersManager.isModifierActive(entity, TravellersModifiersManager.UNRESTRAINED_MODIFIER))
+		if (!(entity instanceof LivingEntity living) || living.stuckSpeedMultiplier.lengthSqr() <= 1.0E-7 || !TravellersModifierUtil.isModifierActive(entity, TravellersModifiers.UNRESTRAINED_MODIFIER))
 			return entity;
 		living.stuckSpeedMultiplier = Vec3.ZERO;
 

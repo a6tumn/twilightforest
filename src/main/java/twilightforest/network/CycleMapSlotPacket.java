@@ -12,7 +12,8 @@ import twilightforest.TwilightForestMod;
 import twilightforest.components.item.ItemDisplayContents;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.TFSounds;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
+import twilightforest.util.TravellersModifierUtil;
 
 public record CycleMapSlotPacket() implements CustomPacketPayload {
 	public static final CycleMapSlotPacket INSTANCE = new CycleMapSlotPacket();
@@ -27,7 +28,7 @@ public record CycleMapSlotPacket() implements CustomPacketPayload {
 
 			ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
 			ItemDisplayContents contents = headStack.get(TFDataComponents.ITEM_DISPLAY);
-			if (contents == null || contents.isEmpty() || !TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.ITEM_DISPLAY_MODIFIER))
+			if (contents == null || contents.isEmpty() || !TravellersModifierUtil.isModifierActive(player, TravellersModifiers.ITEM_DISPLAY_MODIFIER))
 				return;
 
 			ItemDisplayContents.Mutable mutable = new ItemDisplayContents.Mutable(contents);

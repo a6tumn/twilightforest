@@ -29,7 +29,8 @@ import twilightforest.client.renderer.TFRenderTypes;
 import twilightforest.client.state.block.RedThreadRenderState;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFDataAttachments;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class RedThreadRenderer implements BlockEntityRenderer<RedThreadBlockEnti
 
 		Player player = Minecraft.getInstance().player;
 		if (player != null) {
-			boolean wearsActivatedTravellersGoggles = player.getData(TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION) && TravellersModifiersManager.isModifierActive(player, TravellersModifiersManager.RED_THREAD_VISION_MODIFIER);
+			boolean wearsActivatedTravellersGoggles = player.getData(TFDataAttachments.TRAVELLERS_GOGGLES_RED_THREAD_VISION) && TravellersModifierUtil.isModifierActive(player, TravellersModifiers.RED_THREAD_VISION_MODIFIER);
 			state.glowing = player.isHolding(TFBlocks.RED_THREAD.get().asItem()) || wearsActivatedTravellersGoggles;
 		}
 

@@ -13,7 +13,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.components.item.ItemDisplayContents;
 import twilightforest.init.TFDataComponents;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
+import twilightforest.util.TravellersModifierUtil;
 import twilightforest.util.WorldUtil;
 
 import java.util.function.Predicate;
@@ -42,7 +43,7 @@ public class MapHooks {
 	public static boolean updateMapsInGoggles(boolean o, ItemStack stack, Player player) {
 		if (o) return true;
 		ItemStack headStack = player.getItemBySlot(EquipmentSlot.HEAD);
-		if (!TravellersModifiersManager.isModifierActive(player, headStack, TravellersModifiersManager.ITEM_DISPLAY_MODIFIER)) return false;
+		if (!TravellersModifierUtil.isModifierActive(player, headStack, TravellersModifiers.ITEM_DISPLAY_MODIFIER)) return false;
 		ItemDisplayContents contents = headStack.get(TFDataComponents.ITEM_DISPLAY);
 		if (contents == null || contents.isEmpty()) return false;
 		NonNullList<ItemStack> items = contents.items();

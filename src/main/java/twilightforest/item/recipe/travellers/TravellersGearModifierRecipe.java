@@ -6,9 +6,9 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.level.Level;
-import twilightforest.init.custom.TravellersModifiersManager;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
+import twilightforest.util.TravellersModifierUtil;
 
 import javax.annotation.Nullable;
 import java.util.stream.StreamSupport;
@@ -29,9 +29,9 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 		int slots = 0;
 		if (stack.getItem() instanceof TravellersModifiable travellersModifiableItem)
 			slots = travellersModifiableItem.getModifierSlots();
-		return TravellersModifiersManager.countInsertableModifiers(level.registryAccess(), stack) < slots
-			&& !TravellersModifiersManager.hasTravellersModifier(stack, this.travellersModifierHolder)
-			&& TravellersModifiersManager.getModifierDataComponentProviders(input, this.travellersModifierHolder) <= 1;
+		return TravellersModifierUtil.countInsertableModifiers(level.registryAccess(), stack) < slots
+			&& !TravellersModifierUtil.hasTravellersModifier(stack, this.travellersModifierHolder)
+			&& TravellersModifierUtil.getModifierDataComponentProviders(input, this.travellersModifierHolder) <= 1;
 	}
 
 	@Override
@@ -50,9 +50,9 @@ public abstract class TravellersGearModifierRecipe extends CustomRecipe {
 	}
 
 	public ItemStack applyModifier(ItemStack stack, CraftingInput input) {
-		if (TravellersModifiersManager.transferModifier(stack, input, this.travellersModifierHolder))
+		if (TravellersModifierUtil.transferModifier(stack, input, this.travellersModifierHolder))
 			return stack;
-		boolean modifierAdded = TravellersModifiersManager.addModifier(stack, this.travellersModifierHolder);
+		boolean modifierAdded = TravellersModifierUtil.addModifier(stack, this.travellersModifierHolder);
 		return modifierAdded ? stack : ItemStack.EMPTY;
 	}
 

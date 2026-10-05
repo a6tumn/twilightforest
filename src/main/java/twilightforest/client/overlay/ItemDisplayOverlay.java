@@ -13,8 +13,9 @@ import twilightforest.components.item.ItemDisplayContents;
 import twilightforest.config.TFConfig;
 import twilightforest.init.TFDataComponents;
 import twilightforest.init.custom.ItemDisplays;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.item.travellers_gear.modifiers.display.ItemDisplayType;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,7 +27,7 @@ public class ItemDisplayOverlay {
 			return;
 
 		ItemStack goggles = player.getItemBySlot(EquipmentSlot.HEAD);
-		if (!TravellersModifiersManager.isModifierActive(player, goggles, TravellersModifiersManager.ITEM_DISPLAY_MODIFIER))
+		if (!TravellersModifierUtil.isModifierActive(player, goggles, TravellersModifiers.ITEM_DISPLAY_MODIFIER))
 			return;
 
 		ItemDisplayContents contents = goggles.get(TFDataComponents.ITEM_DISPLAY);

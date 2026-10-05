@@ -35,9 +35,10 @@ import twilightforest.client.model.armor.TFArmorModel;
 import twilightforest.client.model.armor.TravellersWingsModel;
 import twilightforest.client.renderer.armor.TFArmorRenderer;
 import twilightforest.init.*;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifiable;
 import twilightforest.item.travellers_gear.modifiers.TravellersModifier;
+import twilightforest.util.TravellersModifierUtil;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -114,14 +115,14 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 		if (registries == null)
 			return;
 
-		List<Holder.Reference<TravellersModifier>> abilityModifiers = TravellersModifiersManager.findAllAbilityModifiers(registries, stack);
+		List<Holder.Reference<TravellersModifier>> abilityModifiers = TravellersModifierUtil.findAllAbilityModifiers(registries, stack);
 		for (Holder.Reference<TravellersModifier> travellersModifierReference : abilityModifiers) {
-			builder.accept(Component.translatable("travellers_gear.ability", TravellersModifiersManager.getModifierTooltipComponent(travellersModifierReference).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.GOLD));
+			builder.accept(Component.translatable("travellers_gear.ability", TravellersModifierUtil.getModifierTooltipComponent(travellersModifierReference).withStyle(ChatFormatting.GRAY)).withStyle(ChatFormatting.GOLD));
 		}
 
-		List<Holder.Reference<TravellersModifier>> insertableModifiers = TravellersModifiersManager.findAllInsertableModifiers(registries, stack);
+		List<Holder.Reference<TravellersModifier>> insertableModifiers = TravellersModifierUtil.findAllInsertableModifiers(registries, stack);
 		for (Holder.Reference<TravellersModifier> modifier : insertableModifiers) {
-			builder.accept(Component.literal("- ").append(TravellersModifiersManager.getModifierTooltipComponent(modifier).withStyle(ChatFormatting.GRAY)));
+			builder.accept(Component.literal("- ").append(TravellersModifierUtil.getModifierTooltipComponent(modifier).withStyle(ChatFormatting.GRAY)));
 			if (flag.hasShiftDown()) {
 				for (Component description : modifier.value().getDescription()) {
 					// FIXME There has to be a better way to bold only the indent and arrow and not the information component
@@ -223,7 +224,7 @@ public class TravellersArmorItem extends Item implements TravellersModifiable {
 						ModelPart leggingsLayer = this.getModelPart(TFModelLayers.TRAVELLERS_ARMOR_LEGGINGS);
 						leggingsLayer.getAllParts().forEach(part -> part.skipDraw = true);
 						boolean hasWings = stack.has(TFDataComponents.TRAVELLERS_HAS_WINGS);
-						boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT) || TravellersModifiersManager.hasTravellersModifier(Minecraft.getInstance().level.registryAccess(), stack, TravellersModifiersManager.SWAP_HOTBAR_MODIFIER);
+						boolean hasBelt = stack.has(TFDataComponents.TRAVELLERS_HAS_BELT) || TravellersModifierUtil.hasTravellersModifier(Minecraft.getInstance().level.registryAccess(), stack, TravellersModifiers.SWAP_HOTBAR_MODIFIER);
 
 						TravellersWingsModel.skipBelt(leggingsLayer, !hasBelt);
 						TravellersWingsModel.skipWings(leggingsLayer, !hasWings);

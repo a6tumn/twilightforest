@@ -9,7 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.ItemStack;
 import twilightforest.TFRegistries;
-import twilightforest.init.custom.TravellersModifiersManager;
+import twilightforest.init.custom.TravellersModifiers;
 import twilightforest.item.travellers_gear.TravellersArmorItem;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public interface TravellersModifier {
 	}
 
 	default boolean isActive(ItemStack stack, ResourceKey<TravellersModifier> modifierKey, boolean spectator) {
-		return this.hasModifier(stack) && !spectator && (!TravellersArmorItem.isTravellersArmorAndBroken(stack) || TravellersModifiersManager.ALWAYS_ACTIVE.contains(modifierKey));
+		return this.hasModifier(stack) && !spectator && (!TravellersArmorItem.isTravellersArmorAndBroken(stack) || TravellersModifiers.ALWAYS_ACTIVE.contains(modifierKey));
 	}
 
 	static DataResult<EquipmentSlotGroup> validateEquipment(EquipmentSlotGroup group) {
