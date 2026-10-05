@@ -1,12 +1,18 @@
 package twilightforest.asmhooks;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.StaticCache2D;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.status.ChunkStep;
 import net.minecraft.world.level.chunk.status.WorldGenContext;
 import net.minecraft.world.level.levelgen.Beardifier;
@@ -18,12 +24,17 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
-import twilightforest.init.custom.ChunkBlanketProcessors;
+import twilightforest.TFRegistries;
+import twilightforest.world.components.chunkblanketing.ChunkBlanketProcessor;
 import twilightforest.world.components.chunkgenerators.CustomTerrainBeardifier;
 import twilightforest.world.components.structures.CustomDensitySource;
 import twilightforest.world.components.structures.util.CustomStructureData;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @SuppressWarnings({"JavadocReference", "unused"})
 public class WorldgenHooks {
@@ -57,7 +68,24 @@ public class WorldgenHooks {
 	 * {@link net.minecraft.world.level.chunk.status.ChunkStatusTasks#generateSurface(WorldGenContext, ChunkStep, StaticCache2D, ChunkAccess)}
 	 */
 	public static void chunkBlanketing(ChunkAccess access, WorldGenRegion region) {
-		ChunkBlanketProcessors.chunkBlanketing(access, region);
+		ChunkPos chunkPos = access.getPos();
+		Set<Holder<Biome>> biomesInChunk = new ObjectArraySet<>();
+
+		for (LevelChunkSection levelchunksection : region.getChunk(chunkPos.x(), chunkPos.z()).getSections()) {
+			levelchunksection.getBiomes().getAll(biomesInChunk::add);
+		}
+
+		Iterator<ChunkBlanketProcessor> modifierIterator = region.registryAccess()
+			.lookup(TFRegistries.Keys.CHUNK_BLANKET_PROCESSORS)
+			.map(Registry::stream)
+			.orElseGet(Stream::empty)
+			.filter(modifier -> modifier.biomesForApplication().stream().anyMatch(biomesInChunk::contains))
+			.iterator();
+
+		Function<BlockPos, Holder<Biome>> biomeGetter = region::getBiome;
+		while (modifierIterator.hasNext()) {
+			modifierIterator.next().processChunk(region, region.getRandom().fork(), biomeGetter, access);
+		}
 	}
 
 	/**
