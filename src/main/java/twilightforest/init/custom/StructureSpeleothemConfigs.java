@@ -1,7 +1,5 @@
 package twilightforest.init.custom;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -21,13 +19,5 @@ public class StructureSpeleothemConfigs {
 
 	private static ResourceKey<StructureSpeleothemConfig> makeKey(Identifier name) {
 		return ResourceKey.create(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS, name);
-	}
-
-	public static Holder.Reference<StructureSpeleothemConfig> getConfigHolder(HolderLookup.Provider registryAccess, String strRL) {
-		return getConfigHolder(registryAccess, makeKey(Identifier.parse(strRL)));
-	}
-
-	public static Holder.Reference<StructureSpeleothemConfig> getConfigHolder(HolderLookup.Provider registryAccess, ResourceKey<StructureSpeleothemConfig> resourceKey) {
-		return registryAccess.lookupOrThrow(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS).get(resourceKey).get();
 	}
 }

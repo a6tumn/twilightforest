@@ -24,9 +24,9 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
+import twilightforest.TFRegistries;
 import twilightforest.init.TFEntities;
 import twilightforest.init.TFStructurePieceTypes;
-import twilightforest.init.custom.StructureSpeleothemConfigs;
 import twilightforest.loot.TFLootTables;
 import twilightforest.util.BoundingBoxUtils;
 import twilightforest.world.components.feature.BlockSpikeFeature;
@@ -56,7 +56,10 @@ public class HollowHillComponent extends TFStructureComponentOld {
 		this.hdiam = (this.hillSize * 2 + 1) * 16;
 
 		// TODO: Maybe write a fallback based on hillsize/Class, possibly in a new superclass
-		Holder.Reference<StructureSpeleothemConfig> configHolder = StructureSpeleothemConfigs.getConfigHolder(ctx.registryAccess(), nbt.getString("config_id").orElseThrow());
+		Holder.Reference<StructureSpeleothemConfig> configHolder = ctx.registryAccess()
+			.lookupOrThrow(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS)
+			.get(ResourceKey.create(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS, Identifier.parse(nbt.getString("config_id").orElseThrow())))
+			.orElseThrow();
 		this.speleothemConfig = configHolder.value();
 		this.speleothemConfigId = configHolder.key().identifier();
 	}

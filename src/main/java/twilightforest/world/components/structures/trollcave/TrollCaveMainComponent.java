@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
@@ -22,10 +23,10 @@ import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import org.jetbrains.annotations.Nullable;
+import twilightforest.TFRegistries;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFConfiguredFeatures;
 import twilightforest.init.TFStructurePieceTypes;
-import twilightforest.init.custom.StructureSpeleothemConfigs;
 import twilightforest.loot.TFLootTables;
 import twilightforest.tags.TFBlockTags;
 import twilightforest.util.BoundingBoxUtils;
@@ -52,7 +53,10 @@ public class TrollCaveMainComponent extends TFStructureComponentOld {
 		this.size = nbt.getIntOr("size", 0);
 		this.height = nbt.getIntOr("height", 0);
 
-		this.speleothemConfigHolder = StructureSpeleothemConfigs.getConfigHolder(ctx.registryAccess(), nbt.getString("config_id").orElseThrow());
+		this.speleothemConfigHolder = ctx.registryAccess()
+			.lookupOrThrow(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS)
+			.get(ResourceKey.create(TFRegistries.Keys.STRUCTURE_SPELEOTHEM_SETTINGS, Identifier.parse(nbt.getString("config_id").orElseThrow())))
+			.orElseThrow();
 		this.speleothemConfig = this.speleothemConfigHolder.value();
 	}
 
