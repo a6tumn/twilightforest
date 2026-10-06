@@ -20,6 +20,8 @@ import twilightforest.TwilightForestMod;
 
 import java.util.List;
 
+
+// TODO: Handle Maz slime and mobs that burn in daylight
 public final class EntityDebugHandler {
 	private static final int ENTITY_Y = 70;
 	private static final int CHUNK_SPACING = 2;
