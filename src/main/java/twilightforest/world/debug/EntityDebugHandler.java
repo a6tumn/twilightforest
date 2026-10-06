@@ -69,7 +69,7 @@ public final class EntityDebugHandler {
 			ensureEntityLabel(level, entity);
 		}
 
-		if (entity instanceof AgeableMob) {
+		if (entity instanceof AgeableMob && supportsBaby(level, debugEntity.type())) {
 			Entity baby = findEntity(level, chunkPos, debugEntity.type(), true);
 			if (baby == null) {
 				spawnEntity(level, chunkPos, debugEntity, true);
@@ -197,6 +197,18 @@ public final class EntityDebugHandler {
 	private static boolean isDebugEntity(Entity entity) {
 		return entity.entityTags().contains(ENTITY_TAG);
 	}
+
+	// TODO: Replace this method with checks for AgeableMob#canBeABaby() on 26.4
+	private static boolean supportsBaby(ServerLevel level, EntityType<?> type) {
+		Entity entity = type.create(level, EntitySpawnReason.COMMAND);
+		if (!(entity instanceof AgeableMob ageableMob)) {
+			return false;
+		}
+
+		ageableMob.setBaby(true);
+		return ageableMob.isBaby(); // Some TF entities inherit from AgeableMob, but do not support the baby behavior and thus set this to false
+	}
+
 
 	private EntityDebugHandler() {
 	}
