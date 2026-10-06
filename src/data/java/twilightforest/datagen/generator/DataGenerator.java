@@ -46,6 +46,7 @@ public class DataGenerator {
 		generator.addProvider(true, new StructureTagGenerator(output, lookupProvider));
 		generator.addProvider(true, new TimelineTagGenerator(output, lookupProvider));
 		generator.addProvider(true, new WoodPaletteTagGenerator(output, lookupProvider));
+		generator.addProvider(true, new WorldPresetTagsProvider(output, lookupProvider));
 
 		//the other stuff
 		generator.addProvider(true, new CraftingGeneratorRunner(output, lookupProvider));

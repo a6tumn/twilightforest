@@ -81,6 +81,7 @@ public final class TwilightForestMod {
 		TFDataSerializers.DATA_SERIALIZERS.register(bus);
 		TFFeatureModifiers.FOLIAGE_PLACERS.register(bus);
 		TFFeatureModifiers.TREE_DECORATORS.register(bus);
+		TFChunkGenerators.CHUNK_GENERATORS.register(bus);
 		TFEnchantmentEffects.ENTITY_EFFECTS.register(bus);
 		TFFeatureModifiers.PLACEMENT_MODIFIERS.register(bus);
 		TFDensityFunctions.DENSITY_FUNCTION_TYPES.register(bus);

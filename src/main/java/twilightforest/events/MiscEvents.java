@@ -40,6 +40,7 @@ import twilightforest.init.TFEntities;
 import twilightforest.init.TFItems;
 import twilightforest.network.CreateMovingCicadaSoundPacket;
 import twilightforest.util.ArmorUtil;
+import twilightforest.world.debug.EntityDebugHandler;
 
 @Component
 public class MiscEvents {
@@ -54,6 +55,7 @@ public class MiscEvents {
 		NeoForge.EVENT_BUS.addListener(this::addTomesToLecterns);
 		NeoForge.EVENT_BUS.addListener(this::washOffCloth);
 		NeoForge.EVENT_BUS.addListener(this::playQueenRefillSound);
+		NeoForge.EVENT_BUS.addListener(EntityDebugHandler::setup);
 	}
 
 	private void addPrey(EntityJoinLevelEvent event) {
