@@ -1074,6 +1074,7 @@
   "gamerule.twilightforest.players_twilight_portal_default_delay.description": "Time (in ticks) that a non-creative mode player needs to stand in The Twilight Forest portal before changing dimensions.",
   "gamerule.twilightforest.twilightforest_enforced_progression": "Twilight Forest: Enforced Progression",
   "gamerule.twilightforest.twilightforest_enforced_progression.description": "Some Twilight Forest biomes are locked until you defeat certain bosses in the dimension. Check your advancements for the progression order.",
+  "generator.twilightforest.entity_debug": "TF Entity Debug",
   "giantSkinUUIDs.button": "Edit Skins",
   "gui.twilightforest.crumble_horn_jei": "Crumble Horn",
   "gui.twilightforest.drying_jei": "Drying Rack",

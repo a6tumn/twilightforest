@@ -22,6 +22,8 @@ public class LangGenerator extends TFLangProvider {
 
 	@Override
 	protected void addTranslations(HolderLookup.Provider registries) {
+		this.add("generator.twilightforest.entity_debug", "TF Entity Debug");
+
 		this.add("itemGroup.twilightforest.blocks", "Twilight Forest: Blocks");
 		this.add("itemGroup.twilightforest.items", "Twilight Forest: Items");
 		this.add("itemGroup.twilightforest.equipment", "Twilight Forest: Equipment");
