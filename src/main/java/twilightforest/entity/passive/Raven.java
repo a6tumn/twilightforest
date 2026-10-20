@@ -1,6 +1,9 @@
 package twilightforest.entity.passive;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundSoundEntityPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -23,9 +26,9 @@ import twilightforest.loot.TFLootTables;
 import twilightforest.tags.TFItemTags;
 
 public class Raven extends FlyingBird {
+	private static final EntityDataAccessor<Boolean> HAS_DROPPED_ITEM = SynchedEntityData.defineId(Raven.class, EntityDataSerializers.BOOLEAN);
 	private static final int INTERACTION_FAIL_COOLDOWN = 100;
-	private boolean hasDroppedItem;
-	private int interactionFailCooldownTimer;
+	private int failCooldown;
 
 	public Raven(EntityType<? extends Raven> type, Level world) {
 		super(type, world);
@@ -41,36 +44,49 @@ public class Raven extends FlyingBird {
 	@Override
 	public void tick() {
 		super.tick();
-		if (!this.level().isClientSide() && this.interactionFailCooldownTimer > 0) {
-			this.interactionFailCooldownTimer--;
+		if (!this.level().isClientSide() && this.failCooldown > 0) {
+			this.failCooldown--;
 		}
 	}
 
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand, Vec3 location) {
-		if (!this.hasDroppedItem && player.getItemInHand(hand).isEmpty() && this.level() instanceof ServerLevel serverLevel) {
-			this.hurtServer(serverLevel, this.damageSources().playerAttack(player), 0F);
-			this.dropFromEntityInteractLootTable(serverLevel, TFLootTables.RAVEN_INTERACTION, player, player.getItemInHand(hand), (_, stack) -> InventoryUtil.giveItemToPlayerAndPlaySound(player, stack));
-			this.hasDroppedItem = true;
-			return InteractionResult.SUCCESS;
-		} else if (this.interactionFailCooldownTimer == 0) {
-			this.level().playSound(null, BlockPos.containing(this.position()), this.getHurtSound(this.damageSources().playerAttack(player)), SoundSource.NEUTRAL);
-			this.interactionFailCooldownTimer = INTERACTION_FAIL_COOLDOWN;
+		boolean canGive = !this.getHasDroppedItem() && player.getItemInHand(hand).isEmpty();
+
+		if (!(this.level() instanceof ServerLevel level)) {
+			return canGive ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		}
 
-		return InteractionResult.FAIL;
+		if (!canGive) {
+			if (this.failCooldown == 0) {
+				level.getChunkSource().sendToTrackingPlayers(this, new ClientboundSoundEntityPacket(TFSounds.RAVEN_SQUAWK, SoundSource.NEUTRAL, this, 1.0F, 1.0F, level.getRandom().nextLong()));
+				this.failCooldown = INTERACTION_FAIL_COOLDOWN;
+			}
+			return InteractionResult.FAIL;
+		}
+
+		this.hurtServer(level, this.damageSources().playerAttack(player), 0.0F);
+		this.dropFromEntityInteractLootTable(level, TFLootTables.RAVEN_INTERACTION, player, player.getItemInHand(hand), (_, stack) -> InventoryUtil.giveItemToPlayerAndPlaySound(player, stack));
+		this.setHasDroppedItem(true);
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(HAS_DROPPED_ITEM, false);
 	}
 
 	@Override
 	protected void addAdditionalSaveData(ValueOutput output) {
 		super.addAdditionalSaveData(output);
-		output.putBoolean("HasDroppedItem", hasDroppedItem);
+		output.putBoolean("HasDroppedItem", getHasDroppedItem());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
-		hasDroppedItem = input.getBooleanOr("HasDroppedItem", false);
+		this.setHasDroppedItem(input.getBooleanOr("HasDroppedItem", false));
 	}
 
 	@Override
@@ -96,5 +112,13 @@ public class Raven extends FlyingBird {
 	@Override
 	public TagKey<Item> getTemptItems() {
 		return TFItemTags.RAVEN_TEMPT_ITEMS;
+	}
+
+	public boolean getHasDroppedItem() {
+		return this.getEntityData().get(HAS_DROPPED_ITEM);
+	}
+
+	public void setHasDroppedItem(boolean hasDroppedItem) {
+		this.getEntityData().set(HAS_DROPPED_ITEM, hasDroppedItem);
 	}
 }
