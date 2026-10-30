@@ -164,7 +164,7 @@ public class SlideBlock extends Entity {
 				DamageSource source = TFDamageTypes.getDamageSource(this.level(), TFDamageTypes.SLIDER);
 				float amount = 5.0F;
 
-				living.hurt(TFDamageTypes.getDamageSource(this.level(), TFDamageTypes.SLIDER), amount);
+				living.hurt(source, amount);
 
 				double kx = (this.getX() - entity.getX()) * 2.0D;
 				double kz = (this.getZ() - entity.getZ()) * 2.0D;
