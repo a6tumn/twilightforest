@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -193,13 +194,21 @@ public class TFConfig {
 
 		//resends uncrafting settings to all players when the config is reloaded. This ensures all players have matching configs so things don't desync.
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		if (server != null && server.isDedicatedServer()) {
-			PacketDistributor.sendToAllPlayers(new SyncUncraftingTableConfigPacket(
+		if (server != null) {
+			SyncUncraftingTableConfigPacket packet = new SyncUncraftingTableConfigPacket(
 				uncraftingXpCostMultiplier, repairingXpCostMultiplier,
 				allowShapelessUncrafting, disableIngredientSwitching,
 				disableUncraftingOnly, disableEntireTable,
 				disableUncraftingRecipes, reverseRecipeBlacklist,
-				blacklistedUncraftingModIds, flipUncraftingModIdList));
+				blacklistedUncraftingModIds, flipUncraftingModIdList
+			);
+
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				if (server.isSingleplayerOwner(player.nameAndId()))
+					continue;
+
+				PacketDistributor.sendToPlayer(player, packet);
+			}
 		}
 		//sets cached portal locking advancement to null just in case it changed
 		portalLockingAdvancement = null;
