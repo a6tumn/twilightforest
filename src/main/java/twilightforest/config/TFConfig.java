@@ -144,6 +144,11 @@ public class TFConfig {
 		return VALID_AURORA_BIOMES;
 	}
 
+	// When a client logs out of a server, their static config values should be restored
+	public static void restoreLocalUncraftingOptions() {
+		rebakeUncraftingOptions(ConfigSetup.COMMON_CONFIG);
+	}
+
 	protected static void rebakeCommonOptions(TFCommonConfig config) {
 		casketUUIDLocking = config.casketUUIDLocking.get();
 		disableSkullCandles = config.disableSkullCandles.get();
@@ -167,16 +172,7 @@ public class TFConfig {
 		maxPortalSize = config.PORTAL.maxPortalSize.get();
 
 		//Uncrafting Table
-		uncraftingXpCostMultiplier = config.UNCRAFTING_STUFFS.uncraftingXpCostMultiplier.get();
-		repairingXpCostMultiplier = config.UNCRAFTING_STUFFS.repairingXpCostMultiplier.get();
-		allowShapelessUncrafting = config.UNCRAFTING_STUFFS.allowShapelessUncrafting.get();
-		disableIngredientSwitching = config.UNCRAFTING_STUFFS.disableIngredientSwitching.get();
-		disableUncraftingOnly = config.UNCRAFTING_STUFFS.disableUncraftingOnly.get();
-		disableEntireTable = config.UNCRAFTING_STUFFS.disableEntireTable.get();
-		disableUncraftingRecipes = config.UNCRAFTING_STUFFS.disableUncraftingRecipes.get();
-		reverseRecipeBlacklist = config.UNCRAFTING_STUFFS.reverseRecipeBlacklist.get();
-		blacklistedUncraftingModIds = config.UNCRAFTING_STUFFS.blacklistedUncraftingModIds.get();
-		flipUncraftingModIdList = config.UNCRAFTING_STUFFS.flipUncraftingModIdList.get();
+		rebakeUncraftingOptions(config);
 
 		// Tree Cores
 		disableTimeCore = config.MAGIC_TREES.timeRange.get() <= 0;
@@ -192,7 +188,8 @@ public class TFConfig {
 		parryNonTwilightAttacks = config.SHIELD_INTERACTIONS.parryNonTwilightAttacks.get();
 		shieldParryTicks = config.SHIELD_INTERACTIONS.shieldParryTicks.get();
 
-		//resends uncrafting settings to all players when the config is reloaded. This ensures all players have matching configs so things don't desync.
+		// Resends uncrafting settings to all players, unless they are the singleplayer owner, when the config is reloaded.
+		// This ensures all players have matching configs so things don't desync.
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		if (server != null) {
 			SyncUncraftingTableConfigPacket packet = new SyncUncraftingTableConfigPacket(
@@ -210,8 +207,22 @@ public class TFConfig {
 				PacketDistributor.sendToPlayer(player, packet);
 			}
 		}
+
 		//sets cached portal locking advancement to null just in case it changed
 		portalLockingAdvancement = null;
+	}
+
+	protected static void rebakeUncraftingOptions(TFCommonConfig config) {
+		uncraftingXpCostMultiplier = config.UNCRAFTING_STUFFS.uncraftingXpCostMultiplier.get();
+		repairingXpCostMultiplier = config.UNCRAFTING_STUFFS.repairingXpCostMultiplier.get();
+		allowShapelessUncrafting = config.UNCRAFTING_STUFFS.allowShapelessUncrafting.get();
+		disableIngredientSwitching = config.UNCRAFTING_STUFFS.disableIngredientSwitching.get();
+		disableUncraftingOnly = config.UNCRAFTING_STUFFS.disableUncraftingOnly.get();
+		disableEntireTable = config.UNCRAFTING_STUFFS.disableEntireTable.get();
+		disableUncraftingRecipes = config.UNCRAFTING_STUFFS.disableUncraftingRecipes.get();
+		reverseRecipeBlacklist = config.UNCRAFTING_STUFFS.reverseRecipeBlacklist.get();
+		blacklistedUncraftingModIds = config.UNCRAFTING_STUFFS.blacklistedUncraftingModIds.get();
+		flipUncraftingModIdList = config.UNCRAFTING_STUFFS.flipUncraftingModIdList.get();
 	}
 
 	protected static void rebakeClientOptions(TFClientConfig config) {

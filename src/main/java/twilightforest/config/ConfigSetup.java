@@ -48,7 +48,8 @@ public final class ConfigSetup {
 		}
 	}
 
-	//sends uncrafting settings to a player on a server when they log in. This prevents desyncs when the configs dont match up between the player and the server.
+	// Sends uncrafting settings to a player on a server when they log in, unless they are the singleplayer owner.
+	// This prevents desyncs when the configs don't match up between the player and the server.
 	public static void syncUncraftingConfig(PlayerEvent.PlayerLoggedInEvent event) {
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		if (server != null && event.getEntity() instanceof ServerPlayer player && !server.isSingleplayerOwner(player.nameAndId())) {

@@ -92,6 +92,7 @@ public class ClientGameEvents {
 		NeoForge.EVENT_BUS.addListener(this::shakeCamera);
 		NeoForge.EVENT_BUS.addListener(this::translateBookAuthor);
 		NeoForge.EVENT_BUS.addListener(this::updateBowFOV);
+		NeoForge.EVENT_BUS.addListener(this::restoreUncraftingConfigOnLogout);
 
 		NeoForge.EVENT_BUS.addListener(CloudEvents::renderPrecipitation);
 		NeoForge.EVENT_BUS.addListener(CloudEvents::tickWeatherEffects);
@@ -323,5 +324,9 @@ public class ClientGameEvents {
 			event.setCanceled(true);
 			bossEvent.renderBossBar(event.getGuiGraphics(), event.getX(), event.getY());
 		}
+	}
+
+	private void restoreUncraftingConfigOnLogout(ClientPlayerNetworkEvent.LoggingOut event) {
+		TFConfig.restoreLocalUncraftingOptions();
 	}
 }
