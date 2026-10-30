@@ -2,11 +2,11 @@ package twilightforest.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -34,7 +34,7 @@ public class UncraftItemTrigger extends SimpleCriterionTrigger<UncraftItemTrigge
 				ItemPredicate.CODEC.optionalFieldOf("item").forGetter(UncraftItemTrigger.TriggerInstance::item))
 			.apply(instance, UncraftItemTrigger.TriggerInstance::new));
 
-		public static Criterion<UncraftItemTrigger.TriggerInstance> uncraftedItem(ItemPredicate predicate) {
+		public static Criterion<TriggerInstance> uncraftedItem(ItemPredicate predicate) {
 			return TFAdvancements.UNCRAFT_ITEM.get().createCriterion(new UncraftItemTrigger.TriggerInstance(Optional.empty(), Optional.of(predicate)));
 		}
 

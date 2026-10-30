@@ -221,22 +221,22 @@ public class GraveyardFeature extends Feature<NoneFeatureConfiguration> {
 		}
 	}
 
-	public static class WebTemplateProcessor extends StructureProcessor {
+	public static class WebTemplateProcessor implements StructureProcessor {
 		public static final WebTemplateProcessor INSTANCE = new WebTemplateProcessor();
 		public static final MapCodec<WebTemplateProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
 		private WebTemplateProcessor() {
 		}
 
-		@Override
-		protected StructureProcessorType<?> getType() {
-			return TFStructureProcessors.WEB.get();
-		}
-
 		@Nullable
 		@Override
 		public StructureTemplate.StructureBlockInfo process(LevelReader worldIn, BlockPos pos, BlockPos piecepos, StructureTemplate.StructureBlockInfo p_process_3_, StructureTemplate.StructureBlockInfo blockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
 			return blockInfo.state().getBlock() == Blocks.GRASS_BLOCK ? blockInfo : settings.getRandom(pos).nextInt(5) == 0 ? new StructureTemplate.StructureBlockInfo(pos, Blocks.COBWEB.defaultBlockState(), null) : blockInfo;
+		}
+
+		@Override
+		public MapCodec<? extends StructureProcessor> codec() {
+			return TFStructureProcessors.WEB.get();
 		}
 	}
 }

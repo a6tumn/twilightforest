@@ -170,11 +170,11 @@ public class ClientGameEvents {
 		Minecraft minecraft = Minecraft.getInstance();
 		// only fire if we're in the twilight forest
 		if (minecraft.level != null && TFDimension.DIMENSION_KEY.equals(minecraft.level.dimension())) {
-			minecraft.gui.vignetteBrightness = 0.0F;
+			minecraft.gui.hud.vignetteBrightness = 0.0F;
 		}
 
 		if (minecraft.player != null && HostileMountEvents.isRidingUnfriendly(minecraft.player)) {
-			minecraft.gui.setOverlayMessage(Component.empty(), false);
+			minecraft.gui.hud.setOverlayMessage(Component.empty(), false);
 		}
 	}
 
@@ -310,7 +310,7 @@ public class ClientGameEvents {
 					VertexConsumer consumer = buffer.getBuffer(RenderTypes.lines());
 					Vec3 xyz = Vec3.atLowerCornerOf(offsetPos).subtract(event.getCamera().position());
 					int outlineColor = renderState.highContrast() ? 0xff_57_ff_e1 : 0x66_00_00_00;
-					ShapeRenderer.renderShape(poseStack, consumer, GIANT_BLOCK, xyz.x(), xyz.y(), xyz.z(), outlineColor, Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth);
+					ShapeRenderer.renderShape(poseStack, consumer, GIANT_BLOCK, xyz.x(), xyz.y(), xyz.z(), outlineColor, Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth);
 				}
 				return true;
 			}

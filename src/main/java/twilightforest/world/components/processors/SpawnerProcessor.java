@@ -19,7 +19,6 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.init.TFBlocks;
@@ -29,7 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @SuppressWarnings("OptionalIsPresent")
-public class SpawnerProcessor extends StructureProcessor {
+public class SpawnerProcessor implements StructureProcessor {
 	public static final MapCodec<SpawnerProcessor> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 		Codec.SHORT.optionalFieldOf("range").forGetter(SpawnerProcessor::serializeRange),
 		Codec.FLOAT.optionalFieldOf("start_delay_factor").forGetter(SpawnerProcessor::getDelayFactor),
@@ -119,17 +118,17 @@ public class SpawnerProcessor extends StructureProcessor {
 		return modifiedInfo;
 	}
 
+	@Override
+	public MapCodec<? extends StructureProcessor> codec() {
+		return TFStructureProcessors.SPAWNER_PROCESSOR.get();
+	}
+
 	public float rescaleToFitWidth(float entityWidth) {
 		if (this.entityWidthMax.isEmpty() || entityWidth == 0)
 			return 1; // No rescale, use default scale if NaN will be encountered
 
 		float maxWidth = this.entityWidthMax.get();
 		return entityWidth < maxWidth ? 1 : maxWidth / entityWidth;
-	}
-
-	@Override
-	protected StructureProcessorType<?> getType() {
-		return TFStructureProcessors.SPAWNER_PROCESSOR.value();
 	}
 
 	private Optional<Short> serializeRange() {

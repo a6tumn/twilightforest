@@ -2,10 +2,10 @@ package twilightforest.advancements;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.criterion.ContextAwarePredicate;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.advancements.predicates.ContextAwarePredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -36,7 +36,7 @@ public class HurtBossTrigger extends SimpleCriterionTrigger<HurtBossTrigger.Trig
 			return this.hurt.isEmpty() || this.hurt.get().matches(hurt);
 		}
 
-		public static Criterion<HurtBossTrigger.TriggerInstance> hurtBoss(EntityPredicate.Builder hurt) {
+		public static Criterion<TriggerInstance> hurtBoss(EntityPredicate.Builder hurt) {
 			return TFAdvancements.HURT_BOSS.get().createCriterion(new TriggerInstance(Optional.empty(), Optional.of(EntityPredicate.wrap(hurt.build()))));
 		}
 	}
