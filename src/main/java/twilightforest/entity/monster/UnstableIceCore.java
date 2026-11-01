@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.event.EventHooks;
 import twilightforest.init.TFBlocks;
 import twilightforest.init.TFSounds;
-import twilightforest.util.ColorUtil;
 
 public class UnstableIceCore extends BaseIceMob {
 
@@ -110,10 +109,11 @@ public class UnstableIceCore extends BaseIceMob {
 			int blockColor = state.getMapColor(this.level(), pos).col;
 
 			// do appropriate transformation
+			DyeColor dye = getClosestDyeColor(blockColor);
 			if (this.shouldTransformGlass(state, pos)) {
-				this.level().setBlockAndUpdate(pos, ColorUtil.STAINED_GLASS.getColor(getClosestDyeColor(blockColor)));
+				this.level().setBlockAndUpdate(pos, Blocks.STAINED_GLASS.pick(dye).defaultBlockState());
 			} else if (this.shouldTransformClay(state, pos)) {
-				this.level().setBlockAndUpdate(pos, ColorUtil.TERRACOTTA.getColor(getClosestDyeColor(blockColor)));
+				this.level().setBlockAndUpdate(pos, Blocks.DYED_TERRACOTTA.pick(dye).defaultBlockState());
 			}
 		}
 	}

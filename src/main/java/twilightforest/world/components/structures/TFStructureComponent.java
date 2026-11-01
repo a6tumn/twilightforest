@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.DyeColor;
@@ -25,7 +24,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.Lazy;
 import twilightforest.TwilightForestMod;
 import twilightforest.init.TFBlocks;
-import twilightforest.util.ColorUtil;
 import twilightforest.world.components.structures.util.ProgressionPiece;
 
 import java.util.Set;
@@ -107,10 +105,10 @@ public abstract class TFStructureComponent extends StructurePiece implements Spa
 		if (shouldDebug()) { // && rotation!= Rotation.NONE) {
 			int i = rotation.ordinal() * 4;
 			DyeColor[] colors = DyeColor.values();
-			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().minX(), this.getBoundingBox().maxY() + i, this.getBoundingBox().minZ()), ColorUtil.WOOL.getColor(colors[i]));
-			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().maxX(), this.getBoundingBox().maxY() + i + 1, this.getBoundingBox().minZ()), ColorUtil.WOOL.getColor(colors[1 + i]));
-			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().minX(), this.getBoundingBox().maxY() + i + 2, this.getBoundingBox().maxZ()), ColorUtil.WOOL.getColor(colors[2 + i]));
-			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().maxX(), this.getBoundingBox().maxY() + i + 3, this.getBoundingBox().maxZ()), ColorUtil.WOOL.getColor(colors[3 + i]));
+			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().minX(), this.getBoundingBox().maxY() + i, this.getBoundingBox().minZ()), Blocks.WOOL.pick(colors[i]).defaultBlockState());
+			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().maxX(), this.getBoundingBox().maxY() + i + 1, this.getBoundingBox().minZ()), Blocks.WOOL.pick(colors[1 + i]).defaultBlockState());
+			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().minX(), this.getBoundingBox().maxY() + i + 2, this.getBoundingBox().maxZ()), Blocks.WOOL.pick(colors[2 + i]).defaultBlockState());
+			world.setBlockAndUpdate(new BlockPos(this.getBoundingBox().maxX(), this.getBoundingBox().maxY() + i + 3, this.getBoundingBox().maxZ()), Blocks.WOOL.pick(colors[3 + i]).defaultBlockState());
 		}
 	}
 

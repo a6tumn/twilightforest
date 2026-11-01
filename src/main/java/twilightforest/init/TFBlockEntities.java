@@ -2,12 +2,16 @@ package twilightforest.init;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import twilightforest.TwilightForestMod;
 import twilightforest.block.entity.*;
 import twilightforest.block.entity.bookshelf.ChiseledCanopyShelfBlockEntity;
 import twilightforest.block.entity.spawner.*;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TFBlockEntities {
 
@@ -125,21 +129,7 @@ public class TFBlockEntities {
 
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<OminousCandleBlockEntity>> OMINOUS_CANDLE = BLOCK_ENTITIES.register("ominous_candle", () ->
 		new BlockEntityType<>(OminousCandleBlockEntity::new,
-			TFBlocks.OMINOUS_CANDLE.get(),
-			TFBlocks.OMINOUS_WHITE_CANDLE.get(),
-			TFBlocks.OMINOUS_ORANGE_CANDLE.get(),
-			TFBlocks.OMINOUS_MAGENTA_CANDLE.get(),
-			TFBlocks.OMINOUS_LIGHT_BLUE_CANDLE.get(),
-			TFBlocks.OMINOUS_YELLOW_CANDLE.get(),
-			TFBlocks.OMINOUS_LIME_CANDLE.get(),
-			TFBlocks.OMINOUS_PINK_CANDLE.get(),
-			TFBlocks.OMINOUS_GRAY_CANDLE.get(),
-			TFBlocks.OMINOUS_LIGHT_GRAY_CANDLE.get(),
-			TFBlocks.OMINOUS_CYAN_CANDLE.get(),
-			TFBlocks.OMINOUS_PURPLE_CANDLE.get(),
-			TFBlocks.OMINOUS_BLUE_CANDLE.get(),
-			TFBlocks.OMINOUS_BROWN_CANDLE.get(),
-			TFBlocks.OMINOUS_GREEN_CANDLE.get(),
-			TFBlocks.OMINOUS_RED_CANDLE.get(),
-			TFBlocks.OMINOUS_BLACK_CANDLE.get()));
+		Stream.concat(Stream.of(TFBlocks.OMINOUS_CANDLE), TFBlocks.DYED_OMINOUS_CANDLE.asList().stream())
+			.map(DeferredBlock::get)
+			.collect(Collectors.toSet())));
 }

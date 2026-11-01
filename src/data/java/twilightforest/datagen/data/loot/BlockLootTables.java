@@ -610,22 +610,7 @@ public class BlockLootTables extends BlockLootSubProvider {
 
 		add(TFBlocks.OMINOUS_FIRE.get(), noDrop());
 		ominousCandle(TFBlocks.OMINOUS_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_WHITE_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_ORANGE_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_MAGENTA_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_LIGHT_BLUE_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_YELLOW_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_LIME_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_PINK_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_GRAY_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_LIGHT_GRAY_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_CYAN_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_PURPLE_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_BLUE_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_BROWN_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_GREEN_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_RED_CANDLE);
-		ominousCandle(TFBlocks.OMINOUS_BLACK_CANDLE);
+		TFBlocks.DYED_OMINOUS_CANDLE.forEach(this::ominousCandle);
 	}
 
 	private void registerLeavesNoSapling(Block leaves, HolderLookup.RegistryLookup<Enchantment> registrylookup) {

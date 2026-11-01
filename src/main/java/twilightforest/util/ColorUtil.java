@@ -4,26 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 
 public record ColorUtil(Function<DyeColor, Block> function) {
-	public static final ColorUtil WOOL = new ColorUtil(Blocks.WOOL::pick);
-	public static final ColorUtil TERRACOTTA = new ColorUtil(Blocks.DYED_TERRACOTTA::pick);
-	public static final ColorUtil STAINED_GLASS = new ColorUtil(Blocks.STAINED_GLASS::pick);
-
-	public BlockState getColor(DyeColor color) {
-		return this.function.apply(color).defaultBlockState();
-	}
-
-	public Block getRandomColor(Random rand) {
-		DyeColor color = DyeColor.byId(rand.nextInt(16));
-		return this.getColor(color).getBlock();
-	}
 
 	public static float[] rgbToHSV(int r, int g, int b) {
 		float h = 0;
