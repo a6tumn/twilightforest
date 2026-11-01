@@ -7,7 +7,6 @@ import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 
@@ -27,10 +26,8 @@ public class GuiBlockRenderer extends PictureInPictureRenderer<GuiBlockRenderSta
 		minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.ITEMS_FLAT);
 		poseStack.scale(1.0F, -1.0F, -1.0F);
 		poseStack.translate(-0.5F, -0.5F, -0.5F);
-		FeatureRenderDispatcher dispatcher = minecraft.gameRenderer.featureRenderDispatcher();
 		minecraft.getBlockModelResolver().update(blockModelRenderState, guiBlockRenderState.blockState(), displayContext);
-		blockModelRenderState.submit(poseStack, dispatcher.getSubmitNodeStorage(), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
-		dispatcher.renderAllFeatures();
+		blockModelRenderState.submit(poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
 	}
 
 	@Override

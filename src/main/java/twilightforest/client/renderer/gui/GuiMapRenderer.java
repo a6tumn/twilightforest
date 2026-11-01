@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.util.LightCoordsUtil;
 
 public class GuiMapRenderer extends PictureInPictureRenderer<GuiMapRenderState> {
@@ -17,11 +16,8 @@ public class GuiMapRenderer extends PictureInPictureRenderer<GuiMapRenderState> 
 
 	@Override
 	protected void renderToTexture(GuiMapRenderState guiMapRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
-		Minecraft minecraft = Minecraft.getInstance();
 		poseStack.translate(-MapRenderer.WIDTH / 2.0F, -MapRenderer.HEIGHT / 2.0F, 0.0F);
-		FeatureRenderDispatcher dispatcher = minecraft.gameRenderer.featureRenderDispatcher();
-		minecraft.getMapRenderer().render(guiMapRenderState.mapRenderState(), poseStack, dispatcher.getSubmitNodeStorage(), false, LightCoordsUtil.FULL_BRIGHT);
-		dispatcher.renderAllFeatures();
+		Minecraft.getInstance().getMapRenderer().render(guiMapRenderState.mapRenderState(), poseStack, submitNodeCollector, false, LightCoordsUtil.FULL_BRIGHT);
 	}
 
 	@Override

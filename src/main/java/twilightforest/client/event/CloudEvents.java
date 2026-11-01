@@ -189,7 +189,7 @@ public class CloudEvents {
 
 				RandomSource random = RandomSource.create((long) roofX * roofX * 3121 + roofX * 45238971L ^ (long) roofZ * roofZ * 418711 + roofZ * 13761L);
 				if (helper.precipitation() == Biome.Precipitation.RAIN) {
-					RenderType renderType = RenderTypeUtil.weather(TFWeatherRenderer.RAIN_TEXTURES, Minecraft.useShaderTransparency());
+					RenderType renderType = RenderTypeUtil.weather(TFWeatherRenderer.RAIN_TEXTURES, minecraft.gameRenderer.gameRenderState().useShaderTransparency());
 
 					int offset = ticks + roofX * roofX * 3121 + roofX * 45238971 + roofZ * roofZ * 418711 + roofZ * 13761 & 31;
 					float uvOffset = -((float) offset + partialTick) / 32.0F * (3.0F + random.nextFloat());
@@ -205,7 +205,7 @@ public class CloudEvents {
 					vC.addVertex(event.getPoseStack().last(), (float) (roofX - camX + rainX + 0.5D), (float) (botY - camY), (float) (roofZ - camZ + rainZ + 0.5D)).setUv(1.0F, (float) topY * 0.25F + uvOffset).setColor(1.0F, 1.0F, 1.0F, alpha).setLight(lightCoords);
 					vC.addVertex(event.getPoseStack().last(), (float) (roofX - camX - rainX + 0.5D), (float) (botY - camY), (float) (roofZ - camZ - rainZ + 0.5D)).setUv(0.0F, (float) topY * 0.25F + uvOffset).setColor(1.0F, 1.0F, 1.0F, alpha).setLight(lightCoords);
 				} else if (helper.precipitation() == Biome.Precipitation.SNOW) {
-					RenderType renderType = RenderTypeUtil.weather(TFWeatherRenderer.SNOW_TEXTURES, Minecraft.useShaderTransparency());
+					RenderType renderType = RenderTypeUtil.weather(TFWeatherRenderer.SNOW_TEXTURES, minecraft.gameRenderer.gameRenderState().useShaderTransparency());
 
 					float offset = -((float) (ticks & 511) + partialTick) / 512.0F;
 					float uOffset = (float) (random.nextDouble() + (double) fullTick * 0.01D * (double) ((float) random.nextGaussian()));
