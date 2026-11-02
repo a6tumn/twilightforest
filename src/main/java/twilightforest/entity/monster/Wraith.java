@@ -44,7 +44,7 @@ public class Wraith extends Mob implements Enemy, EnforcedHomePoint {
 	@SuppressWarnings("this-escape")
 	public Wraith(EntityType<? extends Wraith> type, Level level) {
 		super(type, level);
-		this.moveControl = new NoClipMoveControl(this);
+		this.moveControl = new NoClipMoveControl<>(this);
 		this.noPhysics = true;
 	}
 

@@ -70,7 +70,7 @@ public class UrGhast extends BaseTFBoss {
 		this.noPhysics = true;
 		this.setInTantrum(false);
 		this.xpReward = 317;
-		this.moveControl = new NoClipMoveControl(this);
+		this.moveControl = new NoClipMoveControl<>(this);
 	}
 
 	public void setInTrap() {

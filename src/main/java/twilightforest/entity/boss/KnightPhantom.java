@@ -94,7 +94,7 @@ public class KnightPhantom extends BaseTFBoss {
 		this.noPhysics = true;
 		this.currentFormation = Formation.HOVER;
 		this.xpReward = 93;
-		this.moveControl = new NoClipMoveControl(this);
+		this.moveControl = new NoClipMoveControl<>(this);
 	}
 
 	@Override
