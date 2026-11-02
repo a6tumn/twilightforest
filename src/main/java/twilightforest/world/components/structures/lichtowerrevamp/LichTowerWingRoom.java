@@ -680,7 +680,7 @@ public final class LichTowerWingRoom extends TwilightJigsawPiece implements Piec
 		return switch (label) {
 			case "hedge_spider" -> TFEntities.HEDGE_SPIDER.value();
 			case "swarm_spider" -> TFEntities.SWARM_SPIDER.value();
-			default -> EntityType.byString(label).orElse(EntityTypes.ZOMBIE);
+			default -> BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(label)).orElse(EntityTypes.ZOMBIE);
 		};
 	}
 
