@@ -84,21 +84,6 @@ public class TFDispenserBehaviors {
 
 		//handling tags should be a thing smh
 		DispenserBlock.registerBehavior(Items.CANDLE, new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.black(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.gray(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.lightGray(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.white(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.red(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.orange(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.yellow(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.green(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.lime(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.blue(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.cyan(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.lightBlue(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.purple(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.magenta(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.pink(), new CandleDispenseBehavior());
-		DispenserBlock.registerBehavior(Items.DYED_CANDLE.brown(), new CandleDispenseBehavior());
+		Items.DYED_CANDLE.forEach(candle -> DispenserBlock.registerBehavior(candle, new CandleDispenseBehavior()));
 	}
 }
