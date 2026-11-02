@@ -17,6 +17,17 @@ import java.util.concurrent.CompletableFuture;
 public class LangGenerator extends TFLangProvider {
 	public static final Map<String, String> SUBTITLE_GENERATOR = new HashMap<>();
 
+	private static final ColorCollection<String> DYE_COLOR_DISPLAY_NAMES = new ColorCollection<>(
+		"White", "Orange",
+		"Magenta", "Light Blue",
+		"Yellow", "Lime",
+		"Pink", "Gray",
+		"Light Gray", "Cyan",
+		"Purple", "Blue",
+		"Brown", "Green",
+		"Red", "Black"
+	);
+
 	public LangGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
 		super(output, registries);
 	}
@@ -552,17 +563,7 @@ public class LangGenerator extends TFLangProvider {
 		this.addItem(TFItems.EXANIMATE_ESSENCE, "Exanimate Essence");
 		this.addBlock(TFBlocks.OMINOUS_FIRE, "Ominous Fire");
 		this.addBlock(TFBlocks.OMINOUS_CANDLE, "Ominous Candle");
-		ColorCollection<String> displayNames = new ColorCollection<>(
-			"White", "Orange",
-			"Magenta", "Light Blue",
-			"Yellow", "Lime",
-			"Pink", "Gray",
-			"Light Gray", "Cyan",
-			"Purple", "Blue",
-			"Brown", "Green",
-			"Red", "Black"
-		);
-		ColorCollection.zipApply(TFBlocks.DYED_OMINOUS_CANDLE, displayNames, (candle, name) -> this.addBlock(candle, "Ominous " + name + " Candle"));
+		ColorCollection.zipApply(TFBlocks.DYED_OMINOUS_CANDLE, DYE_COLOR_DISPLAY_NAMES, (candle, name) -> this.addBlock(candle, "Ominous " + name + " Candle"));
 		this.addItem(TFItems.WROUGHT_IRON_BAR, "Wrought Iron Bar");
 		this.addItem(TFItems.BRITTLE_FLASK, "Brittle Potion Flask");
 		this.addItem(TFItems.GREATER_FLASK, "Greater Potion Flask");
