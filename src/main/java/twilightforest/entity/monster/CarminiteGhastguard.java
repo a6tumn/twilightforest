@@ -3,7 +3,6 @@ package twilightforest.entity.monster;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -30,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.EnforcedHomePoint;
 import twilightforest.entity.ai.goal.GhastguardAttackGoal;
 import twilightforest.entity.ai.goal.GhastguardHomedFlightGoal;
+import twilightforest.entity.ai.goal.GhastguardMoveControl;
 import twilightforest.entity.ai.goal.GhastguardRandomFlyGoal;
 import twilightforest.init.TFSounds;
 
@@ -47,6 +47,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 	public CarminiteGhastguard(EntityType<? extends CarminiteGhastguard> type, Level level) {
 		super(type, level);
+		this.moveControl = new GhastguardMoveControl(this, this::isEngaged);
 		this.wanderFactor = 16.0F;
 	}
 
@@ -148,6 +149,20 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 	public boolean shouldAttack(LivingEntity living) {
 		return true;
+	}
+
+	public boolean isEngaged() {
+		LivingEntity target = this.getTarget();
+		if (target == null)
+			return false;
+
+		double distanceSqr = this.distanceToSqr(target);
+		if (distanceSqr < 32.0D * 32.0D)
+			return true;
+
+		return distanceSqr < 64.0D * 64.0D
+			&& this.shouldAttack(target)
+			&& this.getSensing().hasLineOfSight(target);
 	}
 
 	/**

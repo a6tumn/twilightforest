@@ -18,21 +18,20 @@ public class GhastguardHomedFlightGoal extends Goal {
 		this.setFlags(EnumSet.of(Flag.MOVE));
 	}
 
-	// From RandomFloatAroundGoal, but with extra condition from MoveTowardsRestrictionGoal
 	@Override
 	public boolean canUse() {
-		MoveControl control = this.ghast.getMoveControl();
+		if (this.ghast.isEngaged())
+			return false;
 
-		if (!control.hasWanted()) {
+		MoveControl control = this.ghast.getMoveControl();
+		if (!control.hasWanted())
 			return !this.ghast.isMobWithinHomeArea(this.ghast);
-		} else {
-			double d0 = control.getWantedX() - this.ghast.getX();
-			double d1 = control.getWantedY() - this.ghast.getY();
-			double d2 = control.getWantedZ() - this.ghast.getZ();
-			double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-			return (d3 < 1.0D || d3 > 3600.0D)
-				&& !this.ghast.isMobWithinHomeArea(this.ghast);
-		}
+
+		double d0 = control.getWantedX() - this.ghast.getX();
+		double d1 = control.getWantedY() - this.ghast.getY();
+		double d2 = control.getWantedZ() - this.ghast.getZ();
+		double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+		return (d3 < 1.0D || d3 > 3600.0D) && !this.ghast.isMobWithinHomeArea(this.ghast);
 	}
 
 	// From RandomFloatAroundGoal

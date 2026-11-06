@@ -19,16 +19,18 @@ public class GhastguardRandomFlyGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		MoveControl entitymovehelper = this.parentEntity.getMoveControl();
-		if (!entitymovehelper.hasWanted()) {
-			return parentEntity.getTarget() == null;
-		} else {
-			double d0 = entitymovehelper.getWantedX() - this.parentEntity.getX();
-			double d1 = entitymovehelper.getWantedY() - this.parentEntity.getY();
-			double d2 = entitymovehelper.getWantedZ() - this.parentEntity.getZ();
-			double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-			return parentEntity.getTarget() == null && (d3 < 1.0D || d3 > 3600.0D);
-		}
+		if (this.parentEntity.isEngaged())
+			return false;
+
+		MoveControl control = this.parentEntity.getMoveControl();
+		if (!control.hasWanted())
+			return true;
+
+		double d0 = control.getWantedX() - this.parentEntity.getX();
+		double d1 = control.getWantedY() - this.parentEntity.getY();
+		double d2 = control.getWantedZ() - this.parentEntity.getZ();
+		double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+		return d3 < 1.0D || d3 > 3600.0D;
 	}
 
 	@Override
