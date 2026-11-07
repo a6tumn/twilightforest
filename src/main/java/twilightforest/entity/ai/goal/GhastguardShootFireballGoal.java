@@ -13,7 +13,7 @@ import twilightforest.entity.monster.CarminiteGhastguard;
 public class GhastguardShootFireballGoal extends Goal {
 	private final CarminiteGhastguard ghast;
 	public int chargeTime;
-	public int prevAttackTimer; // TF: Used for rendering
+	public int prevChargeTime; // TF: Used for rendering
 
 	public GhastguardShootFireballGoal(CarminiteGhastguard ghast) {
 		this.ghast = ghast;
@@ -26,7 +26,7 @@ public class GhastguardShootFireballGoal extends Goal {
 
 	@Override
 	public void start() {
-		this.chargeTime = this.prevAttackTimer = 0; // TF: Added prevAttackTimer check
+		this.chargeTime = this.prevChargeTime = 0; // TF: Added prevChargeTime check
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class GhastguardShootFireballGoal extends Goal {
 		if (target != null) {
 			if (target.distanceToSqr(this.ghast) < (double)4096.0F && this.ghast.hasLineOfSight(target)) {
 				Level level = this.ghast.level();
-				this.prevAttackTimer = this.chargeTime; // TF: Set prevAttackTimer
+				this.prevChargeTime = this.chargeTime; // TF: Set prevChargeTime
 				++this.chargeTime;
 				this.ghast.getLookControl().setLookAt(target, 10.0F, this.ghast.getMaxHeadXRot()); // TF: Always face target
 				if (this.chargeTime == 10 && !this.ghast.isSilent()) {
@@ -64,7 +64,8 @@ public class GhastguardShootFireballGoal extends Goal {
 
 				if (this.chargeTime == 20) {
 					Vec3 viewVector = this.ghast.getViewVector(1.0F);
-					double sizeScale = this.ghast.getBbWidth() / 4.0D; // TF: Handle scale for Carminite Ghastling
+					// TF: Handle scale for Carminite Ghastling
+					double sizeScale = this.ghast.getBbWidth() / 4.0D;
 					double forward = 4.0D * sizeScale;
 					double up = 0.5D * sizeScale;
 					double xdd = target.getX() - (this.ghast.getX() + viewVector.x * forward);
@@ -81,11 +82,11 @@ public class GhastguardShootFireballGoal extends Goal {
 					if (this.ghast.getRandom().nextInt(6) == 0) {  // TF: Ghast guards have a 1-in-6 chance to stop targeting after an attack
 						this.ghast.setTarget(null);
 					}
-					this.prevAttackTimer = this.chargeTime; // TF: Set prevAttackTimer
+					this.prevChargeTime = this.chargeTime; // TF: Set prevChargeTime
 					this.chargeTime = -40;
 				}
 			} else if (this.chargeTime > 0) {
-				this.prevAttackTimer = this.chargeTime; // TF: Set prevAttackTimer
+				this.prevChargeTime = this.chargeTime; // TF: Set prevChargeTime
 				--this.chargeTime;
 			}
 
