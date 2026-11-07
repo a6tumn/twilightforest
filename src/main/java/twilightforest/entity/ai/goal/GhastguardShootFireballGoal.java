@@ -64,16 +64,19 @@ public class GhastguardShootFireballGoal extends Goal {
 
 				if (this.chargeTime == 20) {
 					Vec3 viewVector = this.ghast.getViewVector(1.0F);
-					double xdd = target.getX() - (this.ghast.getX() + viewVector.x * (double)4.0F);
-					double ydd = target.getY(0.5F) - ((double)0.5F + this.ghast.getY(0.5F));
-					double zdd = target.getZ() - (this.ghast.getZ() + viewVector.z * (double)4.0F);
+					double sizeScale = this.ghast.getBbWidth() / 4.0D; // TF: Handle scale for Carminite Ghastling
+					double forward = 4.0D * sizeScale;
+					double up = 0.5D * sizeScale;
+					double xdd = target.getX() - (this.ghast.getX() + viewVector.x * forward);
+					double ydd = target.getY(0.5F) - (up + this.ghast.getY(0.5F));
+					double zdd = target.getZ() - (this.ghast.getZ() + viewVector.z * forward);
 					Vec3 direction = new Vec3(xdd, ydd, zdd);
 					if (!this.ghast.isSilent()) {
 						this.ghast.playSound(this.ghast.getFireSound(), 10.0F, this.ghast.getVoicePitch()); // TF: Replace level event with custom sound
 					}
 
 					LargeFireball entity = new LargeFireball(level, this.ghast, direction.normalize(), this.ghast.getExplosionPower());
-					entity.setPos(this.ghast.getX() + viewVector.x * (double)4.0F, this.ghast.getY(0.5F) + (double)0.5F, entity.getZ() + viewVector.z * (double)4.0F);
+					entity.setPos(this.ghast.getX() + viewVector.x * forward, this.ghast.getY(0.5F) + up, entity.getZ() + viewVector.z * forward);
 					level.addFreshEntity(entity);
 					if (this.ghast.getRandom().nextInt(6) == 0) {  // TF: Ghast guards have a 1-in-6 chance to stop targeting after an attack
 						this.ghast.setTarget(null);
