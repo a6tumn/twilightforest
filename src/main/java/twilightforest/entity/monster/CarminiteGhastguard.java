@@ -27,10 +27,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.EnforcedHomePoint;
-import twilightforest.entity.ai.goal.GhastguardAttackGoal;
-import twilightforest.entity.ai.goal.GhastguardHomedFlightGoal;
-import twilightforest.entity.ai.goal.GhastguardMoveControl;
-import twilightforest.entity.ai.goal.GhastguardRandomFlyGoal;
+import twilightforest.entity.ai.goal.*;
 import twilightforest.init.TFSounds;
 
 import java.util.Optional;
@@ -42,7 +39,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 	private static final EntityDataAccessor<Byte> ATTACK_PREVTIMER = SynchedEntityData.defineId(CarminiteGhastguard.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Optional<GlobalPos>> HOME_POINT = SynchedEntityData.defineId(CarminiteGhastguard.class, EntityDataSerializers.OPTIONAL_GLOBAL_POS);
 
-	private GhastguardAttackGoal attackGoal;
+	private GhastguardShootFireballGoal attackGoal;
 	protected float wanderFactor;
 
 	public CarminiteGhastguard(EntityType<? extends CarminiteGhastguard> type, Level level) {
@@ -65,7 +62,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 		this.goalSelector.addGoal(5, new GhastguardHomedFlightGoal(this));
 		this.goalSelector.addGoal(5, new GhastguardRandomFlyGoal(this));
 		this.goalSelector.addGoal(7, new Ghast.GhastLookGoal(this));
-		this.goalSelector.addGoal(7, this.attackGoal = new GhastguardAttackGoal(this));
+		this.goalSelector.addGoal(7, this.attackGoal = new GhastguardShootFireballGoal(this));
 		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
 	}
 
@@ -131,7 +128,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 		int status = this.getTarget() != null && this.shouldAttack(this.getTarget()) ? 1 : 0;
 
 		this.getEntityData().set(ATTACK_STATUS, (byte) status);
-		this.getEntityData().set(ATTACK_TIMER, (byte) attackGoal.attackTimer);
+		this.getEntityData().set(ATTACK_TIMER, (byte) attackGoal.chargeTime);
 		this.getEntityData().set(ATTACK_PREVTIMER, (byte) attackGoal.prevAttackTimer);
 	}
 
