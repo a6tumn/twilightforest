@@ -39,7 +39,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 	private static final EntityDataAccessor<Byte> ATTACK_PREVTIMER = SynchedEntityData.defineId(CarminiteGhastguard.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Optional<GlobalPos>> HOME_POINT = SynchedEntityData.defineId(CarminiteGhastguard.class, EntityDataSerializers.OPTIONAL_GLOBAL_POS);
 
-	private CarminiteGhastAttackGoal attackGoal;
+	private GhastguardAttackGoal attackGoal;
 	protected float wanderFactor;
 
 	public CarminiteGhastguard(EntityType<? extends CarminiteGhastguard> type, Level level) {
@@ -62,7 +62,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 		this.goalSelector.addGoal(5, new GhastguardHomedFlightGoal(this));
 		this.goalSelector.addGoal(5, new GhastguardRandomFlyGoal(this));
 		this.goalSelector.addGoal(7, new Ghast.GhastLookGoal(this));
-		this.goalSelector.addGoal(7, this.attackGoal = new CarminiteGhastAttackGoal(this));
+		this.goalSelector.addGoal(7, this.attackGoal = new GhastguardAttackGoal(this));
 		this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
 	}
 

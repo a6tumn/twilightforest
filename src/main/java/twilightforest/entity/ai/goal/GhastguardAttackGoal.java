@@ -7,13 +7,13 @@ import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.monster.CarminiteGhastguard;
 import twilightforest.entity.monster.CarminiteGhastling;
 
-public class CarminiteGhastAttackGoal extends Goal {
+public class GhastguardAttackGoal extends Goal {
 	private static final int COMMIT_TICK = 10;
 	private final CarminiteGhastguard ghast;
 	public int attackTimer;
 	public int prevAttackTimer;
 
-	public CarminiteGhastAttackGoal(CarminiteGhastguard ghast) {
+	public GhastguardAttackGoal(CarminiteGhastguard ghast) {
 		this.ghast = ghast;
 	}
 
