@@ -27,7 +27,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.EnforcedHomePoint;
-import twilightforest.entity.ai.goal.*;
+import twilightforest.entity.ai.goal.GhastguardHomedFlightGoal;
+import twilightforest.entity.ai.goal.GhastguardMoveControl;
+import twilightforest.entity.ai.goal.GhastguardRandomFlyGoal;
+import twilightforest.entity.ai.goal.GhastguardShootFireballGoal;
 import twilightforest.init.TFSounds;
 
 import java.util.Optional;
@@ -129,7 +132,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 		this.getEntityData().set(ATTACK_STATUS, (byte) status);
 		this.getEntityData().set(ATTACK_TIMER, (byte) attackGoal.chargeTime);
-		this.getEntityData().set(ATTACK_PREVTIMER, (byte) attackGoal.prevAttackTimer);
+		this.getEntityData().set(ATTACK_PREVTIMER, (byte) attackGoal.prevChargeTime);
 	}
 
 	public int getAttackStatus() {
