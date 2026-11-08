@@ -12,7 +12,9 @@ import twilightforest.entity.monster.CarminiteGhastling;
  * [VanillaCopy] of {@link net.minecraft.world.entity.monster.Ghast.GhastShootFireballGoal} with adjustments noted
  */
 public class GhastguardShootFireballGoal extends Goal {
+	private static final int STARE_GRACE_TICKS = 20; // TF: 1-second grace period before becoming angry
 	private final CarminiteGhastguard ghast;
+	private int stareStartTick = -1; // TF: Timer for gaze anger
 	public int chargeTime;
 	public int prevChargeTime; // TF: Used for rendering
 
@@ -20,9 +22,30 @@ public class GhastguardShootFireballGoal extends Goal {
 		this.ghast = ghast;
 	}
 
+	// TF: Added staring checks for Carminite Ghastling
 	@Override
 	public boolean canUse() {
-		return this.ghast.getTarget() != null && this.ghast.shouldAttack(this.ghast.getTarget()); // TF: Added shouldAttack check for Carminite Ghastling
+		LivingEntity target = this.ghast.getTarget();
+		if (target == null || !this.ghast.shouldAttack(target)) {
+			this.stareStartTick = -1;
+			return false;
+		}
+
+		if (!(this.ghast instanceof CarminiteGhastling carminiteGhastling))
+			return true;
+
+		if (carminiteGhastling.isEngagedTarget(target))
+			return true;
+
+		if (this.stareStartTick < 0)
+			this.stareStartTick = carminiteGhastling.tickCount;
+
+		if (carminiteGhastling.tickCount - this.stareStartTick < STARE_GRACE_TICKS)
+			return false;
+
+		carminiteGhastling.engage(target);
+		this.stareStartTick = -1;
+		return true;
 	}
 
 	@Override

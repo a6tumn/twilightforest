@@ -102,20 +102,20 @@ public class CarminiteGhastling extends CarminiteGhastguard {
 
 		// Lose interest if not engaged with target
 		if (!this.isEngagedWith(living)) {
-			if (living == this.engagedTarget)
+			if (this.isEngagedTarget(living))
 				this.engagedTarget = null;
 			return false;
 		}
 
-		if (living == this.engagedTarget)
-			return true;
+		return this.isEngagedTarget(living) || this.isLookedAtBy(living);
+	}
 
-		if (this.isLookedAtBy(living)) {
-			this.engagedTarget = living;
-			return true;
-		}
+	public void engage(LivingEntity living) {
+		this.engagedTarget = living;
+	}
 
-		return false;
+	public boolean isEngagedTarget(LivingEntity living) {
+		return living == this.engagedTarget;
 	}
 
 	private boolean isLookedAtBy(LivingEntity living) {
