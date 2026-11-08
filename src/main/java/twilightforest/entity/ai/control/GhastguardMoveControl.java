@@ -1,4 +1,4 @@
-package twilightforest.entity.ai.goal;
+package twilightforest.entity.ai.control;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.attributes.Attributes;

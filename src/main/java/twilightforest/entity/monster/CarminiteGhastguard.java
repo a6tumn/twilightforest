@@ -28,7 +28,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.EnforcedHomePoint;
 import twilightforest.entity.ai.goal.GhastguardHomedFlightGoal;
-import twilightforest.entity.ai.goal.GhastguardMoveControl;
+import twilightforest.entity.ai.control.GhastguardMoveControl;
 import twilightforest.entity.ai.goal.GhastguardRandomFlyGoal;
 import twilightforest.entity.ai.goal.GhastguardShootFireballGoal;
 import twilightforest.init.TFSounds;
