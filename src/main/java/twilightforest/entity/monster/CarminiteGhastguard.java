@@ -153,16 +153,7 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 	public boolean isEngaged() {
 		LivingEntity target = this.getTarget();
-		if (target == null)
-			return false;
-
-		double distanceSqr = this.distanceToSqr(target);
-		if (distanceSqr < 32.0D * 32.0D)
-			return true;
-
-		return distanceSqr < 64.0D * 64.0D
-			&& this.shouldAttack(target)
-			&& this.getSensing().hasLineOfSight(target);
+		return target != null && this.getSensing().hasLineOfSight(target);
 	}
 
 	/**

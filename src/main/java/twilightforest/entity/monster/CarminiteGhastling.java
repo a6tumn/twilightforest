@@ -79,7 +79,7 @@ public class CarminiteGhastling extends CarminiteGhastguard {
 	@Override
 	public boolean shouldAttack(LivingEntity living) {
 		ItemStack helmet = living.getItemBySlot(EquipmentSlot.HEAD);
-		if (!helmet.isEmpty() && helmet.is(Items.PUMPKIN)) {
+		if (!helmet.isEmpty() && helmet.is(Items.CARVED_PUMPKIN)) {
 			return false;
 		} else if (living.distanceTo(this) <= 3.5F) {
 			return living.hasLineOfSight(this);

@@ -53,7 +53,7 @@ public class GhastguardShootFireballGoal extends Goal {
 	public void tick() {
 		LivingEntity target = this.ghast.getTarget();
 		if (target != null) {
-			if (target.distanceToSqr(this.ghast) < (double)4096.0F && this.ghast.hasLineOfSight(target)) {
+			if (target.distanceToSqr(this.ghast) < 4096.0D && this.ghast.hasLineOfSight(target)) {
 				Level level = this.ghast.level();
 				this.prevChargeTime = this.chargeTime; // TF: Set prevChargeTime
 				++this.chargeTime;
