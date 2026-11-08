@@ -34,10 +34,7 @@ public class GhastguardShootFireballGoal extends Goal {
 		this.ghast.setCharging(false);
 	}
 
-	@Override
-	public boolean requiresUpdateEveryTick() {
-		return true;
-	}
+	// TF: Removed requiresUpdateEveryTick override
 
 	// TF: Commit to the attack if the timer has passed the warning stage
 	@Override
