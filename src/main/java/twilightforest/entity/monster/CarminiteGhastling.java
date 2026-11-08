@@ -1,6 +1,7 @@
 package twilightforest.entity.monster;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
@@ -19,12 +20,14 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 import twilightforest.init.TFSounds;
 
 import java.util.Objects;
 
 public class CarminiteGhastling extends CarminiteGhastguard {
 
+	private @Nullable LivingEntity engagedTarget;
 	private boolean isMinion = false;
 
 	@SuppressWarnings("this-escape")
@@ -75,22 +78,59 @@ public class CarminiteGhastling extends CarminiteGhastguard {
 		return TFSounds.CARMINITE_GHASTLING_WARN.get();
 	}
 
-	// Loosely based on EnderMan.isLookingAtMe
+	@Override
+	protected void customServerAiStep(ServerLevel level) {
+		super.customServerAiStep(level);
+		if (this.engagedTarget == null)
+			return;
+
+		// Lose interest if not engaged with target
+		if (!this.isEngagedWith(this.engagedTarget)) {
+			this.engagedTarget = null;
+		}
+	}
+
 	@Override
 	public boolean shouldAttack(LivingEntity living) {
 		ItemStack helmet = living.getItemBySlot(EquipmentSlot.HEAD);
+
+		// Lose interest if target is disguised
 		if (!helmet.isEmpty() && helmet.is(ItemTags.GAZE_DISGUISE_EQUIPMENT)) {
+			this.engagedTarget = null;
 			return false;
-		} else if (living.distanceTo(this) <= 3.5F) {
-			return living.hasLineOfSight(this);
-		} else {
-			Vec3 vec3d = living.getViewVector(1.0F).normalize();
-			Vec3 vec3d1 = new Vec3(this.getX() - living.getX(), this.getBoundingBox().minY + this.getEyeHeight() - (living.getY() + living.getEyeHeight()), this.getZ() - living.getZ());
-			double d0 = vec3d1.length();
-			vec3d1 = vec3d1.normalize();
-			double d1 = vec3d.dot(vec3d1);
-			return d1 > 1.0D - 0.025D / d0 && living.hasLineOfSight(this);
 		}
+
+		// Lose interest if not engaged with target
+		if (!this.isEngagedWith(living)) {
+			if (living == this.engagedTarget)
+				this.engagedTarget = null;
+			return false;
+		}
+
+		if (living == this.engagedTarget)
+			return true;
+
+		if (this.isLookedAtBy(living)) {
+			this.engagedTarget = living;
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean isLookedAtBy(LivingEntity living) {
+		if (living.distanceTo(this) <= 3.5F)
+			return true;
+
+		Vec3 view = living.getViewVector(1.0F).normalize();
+		Vec3 toGhast = new Vec3(
+			this.getX() - living.getX(),
+			this.getBoundingBox().minY + this.getEyeHeight() - (living.getY() + living.getEyeHeight()),
+			this.getZ() - living.getZ()
+		);
+		double dist = toGhast.length();
+
+		return view.dot(toGhast.normalize()) > 1.0D - 0.025D / dist;
 	}
 
 	//This does not factor into whether the entity is a Minion or not. However, since it is spawned via MOB_SUMMONED, it will always spawn if that is the SpawnReason

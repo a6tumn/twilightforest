@@ -8,6 +8,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -153,7 +154,17 @@ public class CarminiteGhastguard extends Ghast implements EnforcedHomePoint {
 
 	public boolean isEngaged() {
 		LivingEntity target = this.getTarget();
-		return target != null && this.getSensing().hasLineOfSight(target);
+		return target != null && this.isEngagedWith(target);
+	}
+
+	public boolean isEngagedWith(LivingEntity target) {
+		if (!target.isAlive() || target.isRemoved())
+			return false;
+
+		if (this.distanceToSqr(target) > Mth.square(this.getAttributeValue(Attributes.FOLLOW_RANGE)))
+			return false;
+
+		return this.getSensing().hasLineOfSight(target);
 	}
 
 	/**

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.projectile.hurtingprojectile.LargeFireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import twilightforest.entity.monster.CarminiteGhastguard;
+import twilightforest.entity.monster.CarminiteGhastling;
 
 /**
  * [VanillaCopy] of {@link net.minecraft.world.entity.monster.Ghast.GhastShootFireballGoal} with adjustments noted
@@ -76,7 +77,7 @@ public class GhastguardShootFireballGoal extends Goal {
 					LargeFireball entity = new LargeFireball(level, this.ghast, direction.normalize(), this.ghast.getExplosionPower());
 					entity.setPos(this.ghast.getX() + viewVector.x * forward, this.ghast.getY(0.5F) + up, entity.getZ() + viewVector.z * forward);
 					level.addFreshEntity(entity);
-					if (this.ghast.getRandom().nextInt(6) == 0) {  // TF: Ghast guards have a 1-in-6 chance to stop targeting after an attack
+					if (!(this.ghast instanceof CarminiteGhastling) && this.ghast.getRandom().nextInt(6) == 0) {  // TF: Ghast guards have a 1-in-6 chance to stop targeting after an attack
 						this.ghast.setTarget(null);
 					}
 					this.prevChargeTime = this.chargeTime; // TF: Set prevChargeTime
